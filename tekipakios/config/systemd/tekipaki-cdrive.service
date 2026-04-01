@@ -1,0 +1,15 @@
+[Unit]
+Description=Tekipaki C Drive Virtualization
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/mount -t overlay overlay -o lowerdir=/usr,upperdir=/mnt/tekipaki_root/Windows,workdir=/mnt/tekipaki_root/work /usr
+ExecStartPost=/usr/bin/ln -s /usr /C_Windows
+ExecStartPost=/usr/bin/ln -s /home /C_Users
+ExecStartPost=/usr/bin/ln -s /opt /C_ProgramFiles
+ExecStartPost=/usr/bin/ln -s /var/lib /C_ProgramData
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

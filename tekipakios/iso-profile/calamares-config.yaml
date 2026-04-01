@@ -1,0 +1,15 @@
+# Calamares Installer Configuration (Tekipaki v1.6)
+---
+# Hardware Injection Script
+# This runs after the base system copy phase
+- id: tekipaki_hardware_injection
+  name: Tekipaki Hardware Injection
+  module: shellprocess
+  script: |
+    lspci -nn > /tmp/pci.list
+    lsusb > /tmp/usb.list
+    # Auto-detection and injection of drivers (NVIDIA, Realtek, Broadcom)
+    grep -q "NVIDIA" /tmp/pci.list && pacman -S --noconfirm nvidia-dkms
+    grep -q "Realtek" /tmp/pci.list && pacman -S --noconfirm rtl8723be-dkms
+    # Add linux-tekipaki custom kernel hooks
+    mkinitcpio -P

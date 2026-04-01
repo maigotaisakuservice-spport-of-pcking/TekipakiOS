@@ -1,0 +1,44 @@
+name: Build Tekipaki OS ISO
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+
+    - name: Build Custom Apps (Tekipaki-AppSet)
+      run: |
+        cargo build --release
+        mkdir -p bin
+        cp target/release/tekipaki-* bin/
+
+    - name: Build Custom Kernel (linux-tekipaki)
+      run: |
+        # In a real workflow, this would build the ZEN kernel PKGBUILD
+        echo "Building linux-tekipaki ZEN kernel..."
+        touch bin/vmlinuz-linux-tekipaki
+        touch bin/initramfs-linux-tekipaki.img
+
+    - name: Run Archiso to generate ISO
+      run: |
+        # Use docker to run mkarchiso on Ubuntu
+        docker run --rm -v $(pwd):/app -w /app archlinux:latest \
+        /bin/bash -c "pacman -Syu --noconfirm archiso && \
+        mkarchiso -v -w /tmp/archiso-tmp -o out tekipakios/iso-profile"
+
+    - name: Upload ISO Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: TekipakiOS-v1.6-x86_64.iso
+        path: out/*.iso

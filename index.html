@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tekipaki OS - 次世代デスクトップOS</title>
+    <style>
+        :root {
+            --primary-blue: #0078D4;
+            --secondary-blue: #00C1FF;
+            --bg-color: #f3f3f3;
+            --text-color: #202020;
+            --white: #ffffff;
+        }
+        body {
+            font-family: 'Segoe UI', 'Meiryo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            overflow-x: hidden;
+        }
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 1px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            z-index: 1000;
+        }
+        nav a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        nav a:hover { color: var(--primary-blue); }
+        .hero {
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: var(--white);
+            text-align: center;
+            padding: 0 20px;
+        }
+        .hero h1 { font-size: 4rem; margin-bottom: 10px; text-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .hero p { font-size: 1.5rem; max-width: 700px; margin-bottom: 30px; }
+        .btn-main {
+            background: var(--white);
+            color: var(--primary-blue);
+            padding: 12px 35px;
+            border-radius: 50px;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-main:hover { transform: scale(1.05); box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+        .features {
+            padding: 100px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .feature-card {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+            text-align: center;
+        }
+        .feature-card h3 { color: var(--primary-blue); font-size: 1.5rem; }
+        footer {
+            background: #202020;
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">ホーム</a>
+        <a href="download.html">ダウンロード</a>
+        <a href="support.html">サポート</a>
+    </nav>
+    <section class="hero">
+        <h1>Tekipaki OS v1.6</h1>
+        <p>爆速。Windows 11 の操作感を極限まで再現した、次世代 Arch Linux ベース OS。</p>
+        <a href="download.html" class="btn-main">今すぐ始める</a>
+    </section>
+    <section class="features">
+        <div class="feature-card">
+            <h3>爆速起動</h3>
+            <p>linux-tekipaki カーネルにより、電源投入から数秒でデスクトップへ。</p>
+        </div>
+        <div class="feature-card">
+            <h3>Win11 完全偽装</h3>
+            <p>スタートメニュー、エクスプローラー、設定まで、Windows 11 そのものの操作感。</p>
+        </div>
+        <div class="feature-card">
+            <h3>絶対的プロテクト</h3>
+            <p>Tekipaki-Guard と DataLocker が、あなたのデジタル資産を物理レベルで保護。</p>
+        </div>
+    </section>
+    <footer>
+        <p>&copy; 2024 Tekipaki OS Team. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>サポート - Tekipaki OS</title>
+    <style>
+        :root { --primary-blue: #0078D4; --bg-color: #f3f3f3; --text-color: #202020; --white: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; line-height: 1.6; }
+        nav { position: fixed; top: 0; width: 100%; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); padding: 1rem 0; box-shadow: 0 1px 10px rgba(0,0,0,0.05); display: flex; justify-content: center; gap: 2.5rem; z-index: 1000; }
+        nav a { text-decoration: none; color: var(--text-color); font-weight: 500; }
+        .support-header { background: var(--primary-blue); color: white; padding: 150px 20px 80px; text-align: center; }
+        .support-header h1 { font-size: 3rem; margin-bottom: 20px; }
+        .support-content { padding: 80px 20px; max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .support-card { background: var(--white); padding: 30px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
+        .support-card h3 { color: var(--primary-blue); font-size: 1.4rem; margin-bottom: 15px; border-bottom: 2px solid var(--primary-blue); display: inline-block; padding-bottom: 5px; }
+        .support-card p { font-size: 0.95rem; color: #555; }
+        .support-card ul { padding-left: 20px; font-size: 0.9rem; margin-top: 10px; }
+        .support-card li { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">ホーム</a>
+        <a href="download.html">ダウンロード</a>
+        <a href="support.html">サポート</a>
+    </nav>
+    <header class="support-header">
+        <h1>サポート & ドキュメント</h1>
+        <p>困ったときは、こちらのサポートをご利用ください。</p>
+    </header>
+    <section class="support-content">
+        <div class="support-card">
+            <h3>インストールガイド</h3>
+            <p>USBメモリからの起動、パーティションの分割、インストーラーの使用方法を解説します。</p>
+            <ul>
+                <li>USB起動ディスクの作成</li>
+                <li>パーティション分割の注意点</li>
+                <li>ドライバの自動注入について</li>
+            </ul>
+        </div>
+        <div class="support-card">
+            <h3>ライセンス認証</h3>
+            <p>プロダクトキーの形式や、認証が失敗する場合の対処法について説明します。</p>
+            <ul>
+                <li>キー形式: XXXXX-XXXXX-...</li>
+                <li>エディション昇格プロセス</li>
+                <li>「死のカウントダウン」の回避</li>
+            </ul>
+        </div>
+        <div class="support-card">
+            <h3>TRE (回復環境)</h3>
+            <p>OSが起動しなくなった際の、TRE (F11キー) を用いた修復手順です。</p>
+            <ul>
+                <li>Self-Healing (自動修復)</li>
+                <li>クラウドからの再インストール</li>
+                <li>システムの初期化手順</li>
+            </ul>
+        </div>
+        <div class="support-card">
+            <h3>エンタープライズ機能</h3>
+            <p>ADドメイン参加、DataLocker、AppLocker の設定ガイドです。</p>
+            <ul>
+                <li>Active Directory 参加方法</li>
+                <li>PQC暗号 (DataLocker) の設定</li>
+                <li>リモートデスクトップの有効化</li>
+            </ul>
+        </div>
+    </section>
+</body>
+</html>
