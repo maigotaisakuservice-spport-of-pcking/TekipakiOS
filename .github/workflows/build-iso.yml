@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up Rust
       uses: actions-rs/toolchain@v1
@@ -38,7 +38,7 @@ jobs:
         mkarchiso -v -w /tmp/archiso-tmp -o out tekipakios/iso-profile"
 
     - name: Upload ISO Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: TekipakiOS-v1.6-x86_64.iso
         path: out/*.iso
