@@ -4,11 +4,14 @@ After=local-fs.target
 
 [Service]
 Type=oneshot
+# WARNING: Mounting overlay directly over /usr at runtime is dangerous.
+# Production should move this to initramfs for stability.
+ExecStartPre=/usr/bin/mkdir -p /mnt/tekipaki_root/Windows /mnt/tekipaki_root/work /C_Windows /C_Users /C_ProgramFiles /C_ProgramData
 ExecStart=/usr/bin/mount -t overlay overlay -o lowerdir=/usr,upperdir=/mnt/tekipaki_root/Windows,workdir=/mnt/tekipaki_root/work /usr
-ExecStartPost=/usr/bin/ln -s /usr /C_Windows
-ExecStartPost=/usr/bin/ln -s /home /C_Users
-ExecStartPost=/usr/bin/ln -s /opt /C_ProgramFiles
-ExecStartPost=/usr/bin/ln -s /var/lib /C_ProgramData
+ExecStartPost=/usr/bin/mount --bind /usr /C_Windows
+ExecStartPost=/usr/bin/mount --bind /home /C_Users
+ExecStartPost=/usr/bin/mount --bind /opt /C_ProgramFiles
+ExecStartPost=/usr/bin/mount --bind /var/lib /C_ProgramData
 RemainAfterExit=yes
 
 [Install]

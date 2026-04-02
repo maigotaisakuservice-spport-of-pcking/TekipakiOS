@@ -43,7 +43,7 @@ fn build_ui(app: &Application) {
     // Personalization
     let person_box = Box::new(Orientation::Vertical, 10);
     person_box.set_margin_top(20); person_box.set_margin_bottom(20); person_box.set_margin_start(20); person_box.set_margin_end(20);
-    person_box.append(&Label::new(Some("Theme: Windows 11 (Standard)")));
+    person_box.append(&Label::new(Some("Theme: Tekipaki (Standard)")));
     person_box.append(&Button::with_label("Change Wallpaper"));
     notebook.append_page(&person_box, Some(&Label::new(Some("Personalization"))));
 

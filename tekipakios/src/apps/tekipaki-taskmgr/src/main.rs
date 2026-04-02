@@ -17,8 +17,24 @@ fn main() {
         // Processes Page
         let proc_box = Box::new(Orientation::Vertical, 5);
         proc_box.set_margin_top(10); proc_box.set_margin_bottom(10); proc_box.set_margin_start(10); proc_box.set_margin_end(10);
-        proc_box.append(&Label::new(Some("Processes")));
-        let list = ListView::new(None, None);
+        proc_box.append(&Label::new(Some("Processes (Mock)")));
+
+        let model = StringList::new(&[
+            "System", "tekipaki-guardd", "Dolphin", "Firefox", "Settings", "Task Manager"
+        ]);
+        let factory = gtk::SignalListItemFactory::new();
+        factory.connect_setup(|_, list_item| {
+            let label = Label::new(None);
+            list_item.set_child(Some(&label));
+        });
+        factory.connect_bind(|_, list_item| {
+            let label = list_item.child().unwrap().downcast::<Label>().unwrap();
+            let string_object = list_item.item().unwrap().downcast::<gtk::StringObject>().unwrap();
+            label.set_text(&string_object.string());
+        });
+
+        let selection = gtk::SingleSelection::new(Some(model));
+        let list = ListView::new(Some(selection), Some(factory));
         proc_box.append(&list);
         notebook.append_page(&proc_box, Some(&Label::new(Some("Processes"))));
 

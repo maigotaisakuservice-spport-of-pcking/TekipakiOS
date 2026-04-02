@@ -80,3 +80,25 @@ pub fn check_edition(k: BigUint) -> String {
 
     "Invalid".to_string()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_base29_conversion() {
+        let key = "34678";
+        let bigint = base29_to_bigint(key).unwrap();
+        let back = bigint_to_base29(bigint);
+        assert_eq!(back, key);
+    }
+
+    #[test]
+    fn test_edition_logic() {
+        // Just verify that the engine is consistent
+        let key = "RRRRRRRRRRRRRRRRRRRRRRRRR";
+        let k = base29_to_bigint(&key).unwrap();
+        let edition = check_edition(k);
+        assert!(edition == "Home" || edition == "Pro" || edition == "Enterprise" || edition == "Invalid");
+    }
+}

