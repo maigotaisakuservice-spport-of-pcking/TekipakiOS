@@ -1,6 +1,6 @@
 use gtk4 as gtk;
 use gtk::prelude::*;
-use gtk::{Application, ApplicationWindow, ListView, ColumnView, ColumnViewColumn, Label, Box, Orientation, Notebook, StringList};
+use gtk::{Application, ApplicationWindow, ListView, Label, Box, Orientation, Notebook, StringList};
 
 fn main() {
     let app = Application::builder().application_id("com.tekipaki.taskmgr").build();
@@ -17,10 +17,10 @@ fn main() {
         // Processes Page
         let proc_box = Box::new(Orientation::Vertical, 5);
         proc_box.set_margin_top(10); proc_box.set_margin_bottom(10); proc_box.set_margin_start(10); proc_box.set_margin_end(10);
-        proc_box.append(&Label::new(Some("Processes (Mock)")));
+        proc_box.append(&Label::new(Some("Processes (Mock) / プロセス (モック)")));
 
         let model = StringList::new(&[
-            "System", "tekipaki-guardd", "Dolphin", "Firefox", "Settings", "Task Manager"
+            "System (システム)", "tekipaki-guardd (認証エンジン)", "Dolphin (エクスプローラー)", "Firefox (ブラウザ)", "Settings (設定)", "Task Manager (タスクマネージャー)"
         ]);
         let factory = gtk::SignalListItemFactory::new();
         factory.connect_setup(|_, list_item| {

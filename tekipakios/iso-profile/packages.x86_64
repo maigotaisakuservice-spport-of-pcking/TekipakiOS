@@ -46,10 +46,11 @@ tpm2-tools
 
 # Apps
 firefox
-onlyoffice-bin
+# onlyoffice-bin (AUR)
+# wine (Official)
 wine
-proton-ge-custom-bin
+# proton-ge-custom-bin (AUR)
 
 # Installer
 calamares
-pamac-aur
+# pamac-aur (AUR)

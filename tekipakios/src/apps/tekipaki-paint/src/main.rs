@@ -1,6 +1,6 @@
 use gtk4 as gtk;
 use gtk::prelude::*;
-use gtk::{Application, ApplicationWindow, Label, DrawingArea, Orientation, Box, ColorDialog, ColorDialogButton};
+use gtk::{Application, ApplicationWindow, Label, DrawingArea, Orientation, Box};
 
 fn main() {
     let app = Application::builder().application_id("com.tekipaki.paint").build();

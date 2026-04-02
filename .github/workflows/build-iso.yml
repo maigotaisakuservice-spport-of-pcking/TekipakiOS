@@ -32,10 +32,13 @@ jobs:
 
     - name: Build Custom Kernel (linux-tekipaki)
       run: |
-        # In a real workflow, this would build the ZEN kernel PKGBUILD
+        # Placeholder for kernel build.
+        # For CI demo, we ensure these files exist for the archiso script
+        # In production, this would be a full build or pull from a repo
         echo "Building linux-tekipaki ZEN kernel..."
-        touch bin/vmlinuz-linux-tekipaki
-        touch bin/initramfs-linux-tekipaki.img
+        mkdir -p bin
+        echo "mock" > bin/vmlinuz-linux-tekipaki
+        echo "mock" > bin/initramfs-linux-tekipaki.img
 
     - name: Run Archiso to generate ISO
       run: |

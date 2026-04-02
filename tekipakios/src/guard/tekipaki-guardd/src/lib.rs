@@ -33,35 +33,21 @@ pub fn bigint_to_base29(mut n: BigUint) -> String {
 }
 
 pub fn calculate_f_k(k: BigUint) -> BigUint {
-    // f(K) = (K + X - (Y * Z))^(3^52)
-    // X = 0x4B45492D53554B49
-    // Y = 0x54454B4950414B49
-    // Z = 0xDEADBEEFCAFEBABE
+    // Specification: f(K) = (K + X - (Y * Z))^(3^52)
+    // To ensure positive base in modular arithmetic, we use:
+    // (K + X + offset - (Y * Z)) where offset is a multiple of lcm(3,5,8)=120
     let x = BigUint::parse_bytes(b"4B45492D53554B49", 16).unwrap();
     let y = BigUint::parse_bytes(b"54454B4950414B49", 16).unwrap();
     let z = BigUint::parse_bytes(b"DEADBEEFCAFEBABE", 16).unwrap();
 
-    let base = (k + x) - (y * z);
-    // 3^52
-    let exponent = BigUint::from(3u64).pow(52);
+    // Offset to ensure positive result, must be 0 mod 120 to preserve edition logic
+    let offset = BigUint::from(120u64) * BigUint::from(2u64).pow(192); // Large enough
 
-    // Note: To determine mod 3, 5, 8, we can use (base^exp) mod N
-    // This is f(K) mod N = (base mod N)^(exp) mod N
-    base // We return the base for further modular exponentiation
+    (k + x + offset) - (y * z)
 }
 
 pub fn check_edition(k: BigUint) -> String {
-    let x = BigUint::parse_bytes(b"4B45492D53554B49", 16).unwrap();
-    let y = BigUint::parse_bytes(b"54454B4950414B49", 16).unwrap();
-    let z = BigUint::parse_bytes(b"DEADBEEFCAFEBABE", 16).unwrap();
-
-    let base = if (k.clone() + &x) > (&y * &z) {
-        (k + &x) - (&y * &z)
-    } else {
-        // Handle negative result by adding a large multiple of 120 (lcm of 3,5,8)
-        // or just return invalid for now
-        return "Invalid".to_string();
-    };
+    let base = calculate_f_k(k);
 
     let exp = BigUint::from(3u64).pow(52);
 

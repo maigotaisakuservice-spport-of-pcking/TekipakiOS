@@ -1,6 +1,6 @@
 use gtk4 as gtk;
 use gtk::prelude::*;
-use gtk::{Application, ApplicationWindow, Label, Box, Orientation, Button, ProgressBar};
+use gtk::{Application, ApplicationWindow, Label, Box, Orientation, Button};
 
 fn main() {
     let app = Application::builder().application_id("com.tekipaki.tre").build();
@@ -16,12 +16,12 @@ fn main() {
         let vbox = Box::new(Orientation::Vertical, 20);
         vbox.set_margin_top(50); vbox.set_margin_bottom(50); vbox.set_margin_start(50); vbox.set_margin_end(50);
 
-        vbox.append(&Label::builder().label("Choose an option").css_name("title-1").build());
+        vbox.append(&Label::builder().label("Choose an option / オプションを選択してください").css_name("title-1").build());
 
-        let repair_btn = Button::with_label("Auto Repair (Self-Healing)");
-        let cloud_btn = Button::with_label("Cloud Reinstall");
-        let reset_btn = Button::with_label("Reset this PC");
-        let cmd_btn = Button::with_label("Command Prompt");
+        let repair_btn = Button::with_label("Auto Repair (Self-Healing) / 自動修復");
+        let cloud_btn = Button::with_label("Cloud Reinstall / クラウドから再インストール");
+        let reset_btn = Button::with_label("Reset this PC / PCを初期状態に戻す");
+        let cmd_btn = Button::with_label("Command Prompt / コマンド プロンプト");
 
         vbox.append(&repair_btn);
         vbox.append(&cloud_btn);

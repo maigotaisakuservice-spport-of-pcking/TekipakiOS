@@ -1,6 +1,6 @@
 use gtk4 as gtk;
 use gtk::prelude::*;
-use gtk::{Application, ApplicationWindow, TextView, ScrolledWindow, HeaderBar, MenuButton, Box, Orientation};
+use gtk::{Application, ApplicationWindow, TextView, ScrolledWindow};
 
 fn main() {
     let app = Application::builder().application_id("com.tekipaki.note").build();
