@@ -14,7 +14,7 @@ fn main() {
 
         // Win11 Style Recovery UI
         let vbox = Box::new(Orientation::Vertical, 20);
-        vbox.set_margin_start(50);
+        vbox.set_margin_top(50); vbox.set_margin_bottom(50); vbox.set_margin_start(50); vbox.set_margin_end(50);
 
         vbox.append(&Label::builder().label("Choose an option").css_classes(["title-1"]).build());
 

@@ -14,7 +14,7 @@ fn main() {
 
         let vbox = Box::new(Orientation::Vertical, 5);
         let header = Box::new(Orientation::Horizontal, 10);
-        header.set_margin_start(5);
+        header.set_margin_top(5); header.set_margin_bottom(5); header.set_margin_start(5); header.set_margin_end(5);
         header.append(&Label::new(Some("Paint Tools: Brush, Eraser, Fill")));
 
         let canvas = DrawingArea::new();
