@@ -23,7 +23,7 @@ fn build_ui(app: &Application) {
 
     // License Page
     let license_box = Box::new(Orientation::Vertical, 10);
-    license_box.set_margin_all(20);
+    license_box.set_margin_top(20); license_box.set_margin_bottom(20); license_box.set_margin_start(20); license_box.set_margin_end(20);
     license_box.append(&Label::new(Some("License Activation")));
     let key_entry = Entry::builder().placeholder_text("XXXXX-XXXXX-XXXXX-XXXXX-XXXXX").build();
     license_box.append(&key_entry);
@@ -33,7 +33,7 @@ fn build_ui(app: &Application) {
 
     // Network / RDP Page
     let net_box = Box::new(Orientation::Vertical, 10);
-    net_box.set_margin_all(20);
+    net_box.set_margin_top(20); net_box.set_margin_bottom(20); net_box.set_margin_start(20); net_box.set_margin_end(20);
     let rdp_check = CheckButton::with_label("Enable Remote Desktop (RDP)");
     net_box.append(&rdp_check);
     let ad_btn = Button::with_label("Join Active Directory Domain");
@@ -42,7 +42,7 @@ fn build_ui(app: &Application) {
 
     // Personalization
     let person_box = Box::new(Orientation::Vertical, 10);
-    person_box.set_margin_all(20);
+    person_box.set_margin_top(20); person_box.set_margin_bottom(20); person_box.set_margin_start(20); person_box.set_margin_end(20);
     person_box.append(&Label::new(Some("Theme: Windows 11 (Standard)")));
     person_box.append(&Button::with_label("Change Wallpaper"));
     notebook.append_page(&person_box, Some(&Label::new(Some("Personalization"))));

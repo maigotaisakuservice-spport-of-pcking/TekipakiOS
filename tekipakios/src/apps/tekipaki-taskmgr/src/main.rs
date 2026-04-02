@@ -16,7 +16,7 @@ fn main() {
 
         // Processes Page
         let proc_box = Box::new(Orientation::Vertical, 5);
-        proc_box.set_margin_all(10);
+        proc_box.set_margin_start(10);
         proc_box.append(&Label::new(Some("Processes")));
         let list = ListView::new(None, None);
         proc_box.append(&list);
@@ -24,7 +24,7 @@ fn main() {
 
         // Performance Page
         let perf_box = Box::new(Orientation::Vertical, 5);
-        perf_box.set_margin_all(10);
+        perf_box.set_margin_start(10);
         perf_box.append(&Label::new(Some("CPU: 12% | RAM: 3.2 GB / 16.0 GB")));
         notebook.append_page(&perf_box, Some(&Label::new(Some("Performance"))));
 
