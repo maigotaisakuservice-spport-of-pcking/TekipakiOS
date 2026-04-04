@@ -1,0 +1,16 @@
+[package]
+name = "guard_lib"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "guard_lib"
+path = "src/lib.rs"
+
+[[bin]]
+name = "tekipaki-guardd"
+path = "src/main.rs"
+
+[dependencies]
+num-bigint = "0.4"
+num-traits = "0.2"

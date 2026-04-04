@@ -1,0 +1,18 @@
+# Tekipaki Dolphin Style (Windows 11 Replication)
+DolphinViewContainer {
+    background-color: #f3f3f3;
+}
+DolphinSideBar {
+    background-color: #ffffff;
+    border-right: 1px solid #e5e5e5;
+}
+# Only show C: and Home drives in side bar
+DolphinSideBar::item[text*="/"] {
+    display: none;
+}
+DolphinSideBar::item[text="C:"] {
+    display: block;
+}
+DolphinSideBar::item[text="Users"] {
+    display: block;
+}

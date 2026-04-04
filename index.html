@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tekipaki OS - 究極のデスクトップ体験</title>
+    <style>
+        :root { --primary: #0078D4; --secondary: #00C1FF; --bg: #f3f3f3; --text: #202020; --white: #fff; }
+        body { font-family: 'Segoe UI', 'Meiryo', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; line-height: 1.6; }
+        nav { position: fixed; top: 0; width: 100%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); padding: 1rem 0; box-shadow: 0 1px 10px rgba(0,0,0,0.05); display: flex; justify-content: center; gap: 2.5rem; z-index: 1000; }
+        nav a { text-decoration: none; color: var(--text); font-weight: 500; }
+        .hero { height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: var(--white); text-align: center; padding: 0 20px; }
+        .hero h1 { font-size: 4rem; margin: 0; }
+        .hero p { font-size: 1.5rem; max-width: 800px; margin: 20px 0 40px; }
+        .section { padding: 80px 20px; max-width: 1100px; margin: 0 auto; }
+        .section h2 { text-align: center; font-size: 2.5rem; margin-bottom: 50px; color: var(--primary); }
+        .comparison-table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .comparison-table th, .comparison-table td { padding: 20px; text-align: center; border-bottom: 1px solid #eee; }
+        .comparison-table th { background: #f9f9f9; color: #666; font-size: 1.1rem; }
+        .comparison-table .highlight { background: rgba(0,120,212,0.05); font-weight: bold; color: var(--primary); }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .feature-item { background: var(--white); padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
+        footer { background: #202020; color: white; text-align: center; padding: 40px 20px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">ホーム</a>
+        <a href="download.html">ダウンロード</a>
+        <a href="support.html">サポート</a>
+    </nav>
+    <header class="hero">
+        <h1>Tekipaki OS v1.6</h1>
+        <p>Linux を核とし、究極の操作性と爆速のパフォーマンスを融合。<br>既存の主要OSを凌駕する、次世代のデスクトップ・スタンダード。</p>
+        <a href="download.html" style="background:white; color:var(--primary); padding:15px 40px; border-radius:50px; text-decoration:none; font-weight:bold;">無料で体験する</a>
+    </header>
+
+    <section class="section">
+        <h2>なぜ Tekipaki OS なのか？</h2>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <h3>Linux ベースの信頼性</h3>
+                <p>Arch Linux をベースに、独自カーネル linux-tekipaki を搭載。オープンソースの柔軟性と、圧倒的な安定性を両立しました。</p>
+            </div>
+            <div class="feature-item">
+                <h3>直感的な操作感</h3>
+                <p>洗練された独自のデスクトップ環境。迷うことなく、やりたいことに即座にアクセスできます。</p>
+            </div>
+            <div class="feature-item">
+                <h3>次世代のセキュリティ</h3>
+                <p>耐量子暗号 DataLocker と、厳格なシステム保護 Tekipaki-Guard が、あなたのデジタルライフを鉄壁に守ります。</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>他社OSとの比較</h2>
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>機能・特徴</th>
+                    <th class="highlight">Tekipaki OS</th>
+                    <th>大手A社 OS</th>
+                    <th>大手B社 OS</th>
+                    <th>大手C社 OS</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>起動速度</td>
+                    <td class="highlight">爆速 (独自カーネル)</td>
+                    <td>普通</td>
+                    <td>普通</td>
+                    <td>高速</td>
+                </tr>
+                <tr>
+                    <td>UIの自由度</td>
+                    <td class="highlight">無限 (KDEベース)</td>
+                    <td>制限あり</td>
+                    <td>ほぼなし</td>
+                    <td>なし</td>
+                </tr>
+                <tr>
+                    <td>セキュリティ</td>
+                    <td class="highlight">PQC耐量子暗号</td>
+                    <td>標準的</td>
+                    <td>標準的</td>
+                    <td>クラウド依存</td>
+                </tr>
+                <tr>
+                    <td>プライバシー</td>
+                    <td class="highlight">完全非営利・匿名</td>
+                    <td>データ収集あり</td>
+                    <td>限定的</td>
+                    <td>高度な収集あり</td>
+                </tr>
+                <tr>
+                    <td>動作の軽快さ</td>
+                    <td class="highlight">極めて軽量</td>
+                    <td>肥大化傾向</td>
+                    <td>ハードウェア依存</td>
+                    <td>Web依存</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Tekipaki OS Project. Linux is a registered trademark of Linus Torvalds.</p>
+    </footer>
+</body>
+</html>

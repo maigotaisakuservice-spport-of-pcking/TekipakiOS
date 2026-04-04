@@ -1,0 +1,57 @@
+name: Build Tekipaki OS ISO
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgtk-4-dev pkg-config
+
+    - name: Set up Rust
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Rust Cache
+      uses: Swatinem/rust-cache@v2
+
+    - name: Build Custom Apps (Tekipaki-AppSet)
+      run: |
+        cargo build --release
+        mkdir -p bin
+        cp target/release/tekipaki-* bin/
+
+    - name: Build Custom Kernel (linux-tekipaki)
+      run: |
+        # Placeholder for kernel build.
+        # For CI demo, we ensure these files exist for the archiso script
+        # In production, this would be a full build or pull from a repo
+        echo "Building linux-tekipaki ZEN kernel..."
+        mkdir -p bin
+        echo "mock" > bin/vmlinuz-linux-tekipaki
+        echo "mock" > bin/initramfs-linux-tekipaki.img
+
+    - name: Run Archiso to generate ISO
+      run: |
+        # Use docker to run mkarchiso on Ubuntu
+        # We need privileged mode for mkarchiso inside docker
+        docker run --rm --privileged -v $(pwd):/app -w /app archlinux:latest \
+        /bin/bash -c "pacman -Syu --noconfirm archiso && \
+        bash build-iso.sh && \
+        mkarchiso -v -w /tmp/archiso-tmp -o out tekipakios/iso-profile"
+
+    - name: Upload ISO Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: TekipakiOS-v1.6-x86_64.iso
+        path: out/*.iso

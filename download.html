@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ダウンロード - Tekipaki OS</title>
+    <style>
+        :root { --primary: #0078D4; --bg: #f3f3f3; --text: #202020; --white: #fff; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; line-height: 1.6; }
+        nav { position: fixed; top: 0; width: 100%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); padding: 1rem 0; box-shadow: 0 1px 10px rgba(0,0,0,0.05); display: flex; justify-content: center; gap: 2.5rem; z-index: 1000; }
+        nav a { text-decoration: none; color: var(--text); font-weight: 500; }
+        .container { padding: 150px 20px; max-width: 900px; margin: 0 auto; text-align: center; }
+        .download-card { background: var(--white); padding: 50px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); }
+        .btn-download { background: var(--primary); color: var(--white); padding: 15px 50px; border-radius: 50px; font-weight: bold; text-decoration: none; font-size: 1.3rem; display: inline-block; margin: 30px 0; transition: transform 0.2s; }
+        .btn-download:hover { transform: scale(1.05); background: #005a9e; }
+        .requirements { margin-top: 60px; text-align: left; display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; border-top: 1px solid #eee; padding-top: 40px; }
+        .req-box h3 { color: var(--primary); font-size: 1.4rem; margin-bottom: 20px; }
+        .req-box ul { list-style: none; padding: 0; font-size: 1rem; }
+        .req-box li { margin-bottom: 15px; padding-left: 25px; position: relative; }
+        .req-box li::before { content: "✓"; color: #28a745; position: absolute; left: 0; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">ホーム</a>
+        <a href="download.html">ダウンロード</a>
+        <a href="support.html">サポート</a>
+    </nav>
+    <div class="container">
+        <div class="download-card">
+            <h1>Tekipaki OS v1.6 をダウンロード</h1>
+            <p>最新の Arch Linux ベース、革新的な UI/UX を統合した ISO イメージを入手しましょう。</p>
+            <a href="#" class="btn-download" onclick="alert('準備中...')">ISOをダウンロード (x64)</a>
+            <p style="color: #666; font-size: 0.9rem;">SHA-256: <code>e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</code></p>
+        </div>
+
+        <div class="requirements">
+            <div class="req-box">
+                <h3>最低システム要件</h3>
+                <ul>
+                    <li>プロセッサ: 1 GHz 以上の 64 ビット CPU</li>
+                    <li>メモリ: 4 GB 以上</li>
+                    <li>ディスク: 20 GB 以上の空き領域</li>
+                    <li>画面: 800 x 600 ピクセル以上の解像度</li>
+                    <li>セキュアブート: UEFI 対応推奨</li>
+                </ul>
+            </div>
+            <div class="req-box">
+                <h3>推奨システム要件</h3>
+                <ul>
+                    <li>プロセッサ: 2 GHz 以上のマルチコア CPU</li>
+                    <li>メモリ: 8 GB 以上</li>
+                    <li>ディスク: 64 GB 以上の SSD 空き領域</li>
+                    <li>グラフィックス: DirectX 12 互換 (または Mesa 対応)</li>
+                    <li>その他: TPM 2.0 (DataLocker 利用時に推奨)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

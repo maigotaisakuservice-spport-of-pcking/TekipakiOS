@@ -1,0 +1,15 @@
+[Unit]
+Description=Tekipaki OS License Guard Daemon
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/tekipaki-guardd
+Restart=always
+RestartSec=30
+User=root
+WorkingDirectory=/var/lib/tekipaki
+
+[Install]
+WantedBy=multi-user.target

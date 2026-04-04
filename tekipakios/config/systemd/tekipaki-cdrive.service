@@ -1,0 +1,19 @@
+[Unit]
+Description=Tekipaki C Drive Virtualization
+After=local-fs.target
+
+[Service]
+Type=oneshot
+# WARNING: This service creates a virtual 'C Drive' view.
+# To avoid crashing a live system, we mount the overlay to /mnt/tekipaki_virtual_c
+# instead of shadowing /usr directly.
+ExecStartPre=/usr/bin/mkdir -p /mnt/tekipaki_root/Windows /mnt/tekipaki_root/work /mnt/tekipaki_virtual_c /C_Windows /C_Users /C_ProgramFiles /C_ProgramData
+ExecStart=/usr/bin/mount -t overlay overlay -o lowerdir=/usr,upperdir=/mnt/tekipaki_root/Windows,workdir=/mnt/tekipaki_root/work /mnt/tekipaki_virtual_c
+ExecStartPost=/usr/bin/mount --bind /mnt/tekipaki_virtual_c /C_Windows
+ExecStartPost=/usr/bin/mount --bind /home /C_Users
+ExecStartPost=/usr/bin/mount --bind /opt /C_ProgramFiles
+ExecStartPost=/usr/bin/mount --bind /var/lib /C_ProgramData
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
