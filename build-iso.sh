@@ -21,6 +21,7 @@ cp target/release/tekipaki-* "$PROFILE_DIR/airootfs/usr/local/bin/"
 # 4. Inject Systemd Services
 cp tekipakios/config/systemd/*.service "$PROFILE_DIR/airootfs/etc/systemd/system/"
 ln -sf /etc/systemd/system/tekipaki-cdrive.service "$PROFILE_DIR/airootfs/etc/systemd/system/multi-user.target.wants/tekipaki-cdrive.service"
+ln -sf /etc/systemd/system/tekipaki-guardd.service "$PROFILE_DIR/airootfs/etc/systemd/system/multi-user.target.wants/tekipaki-guardd.service"
 
 # 5. Build ISO (Requires archiso and root/docker)
 if [ "$CI" = "true" ]; then

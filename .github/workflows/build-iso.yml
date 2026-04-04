@@ -20,9 +20,10 @@ jobs:
         sudo apt-get install -y libgtk-4-dev pkg-config
 
     - name: Set up Rust
-      run: |
-        rustup toolchain install stable
-        rustup default stable
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Rust Cache
+      uses: Swatinem/rust-cache@v2
 
     - name: Build Custom Apps (Tekipaki-AppSet)
       run: |
@@ -43,8 +44,10 @@ jobs:
     - name: Run Archiso to generate ISO
       run: |
         # Use docker to run mkarchiso on Ubuntu
-        docker run --rm -v $(pwd):/app -w /app archlinux:latest \
+        # We need privileged mode for mkarchiso inside docker
+        docker run --rm --privileged -v $(pwd):/app -w /app archlinux:latest \
         /bin/bash -c "pacman -Syu --noconfirm archiso && \
+        bash build-iso.sh && \
         mkarchiso -v -w /tmp/archiso-tmp -o out tekipakios/iso-profile"
 
     - name: Upload ISO Artifact

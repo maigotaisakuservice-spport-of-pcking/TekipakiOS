@@ -29,9 +29,11 @@ fn main() {
             list_item.set_child(Some(&label));
         });
         factory.connect_bind(|_, list_item| {
-            let list_item = list_item.downcast_ref::<gtk::ListItem>().unwrap();
-            let label = list_item.child().unwrap().downcast::<Label>().unwrap();
-            let string_object = list_item.item().unwrap().downcast::<gtk::StringObject>().unwrap();
+            let list_item = list_item.downcast_ref::<gtk::ListItem>().expect("Not a ListItem");
+            let child = list_item.child().expect("No child");
+            let label = child.downcast::<Label>().expect("Child is not a Label");
+            let item = list_item.item().expect("No item");
+            let string_object = item.downcast::<gtk::StringObject>().expect("Item is not a StringObject");
             label.set_text(&string_object.string());
         });
 
@@ -43,7 +45,17 @@ fn main() {
         // Performance Page
         let perf_box = Box::new(Orientation::Vertical, 5);
         perf_box.set_margin_top(10); perf_box.set_margin_bottom(10); perf_box.set_margin_start(10); perf_box.set_margin_end(10);
-        perf_box.append(&Label::new(Some("CPU: 12% | RAM: 3.2 GB / 16.0 GB")));
+        let cpu_label = Label::new(Some("CPU: 0% / Loading..."));
+        let ram_label = Label::new(Some("RAM: 0 GB / 0 GB"));
+        perf_box.append(&cpu_label);
+        perf_box.append(&ram_label);
+
+        // Mocking refresh logic
+        glib::timeout_add_local(std::time::Duration::from_secs(2), move || {
+            cpu_label.set_text("CPU: 14% | 3.2 GHz");
+            ram_label.set_text("RAM: 4.8 GB / 16.0 GB");
+            glib::ControlFlow::Continue
+        });
         notebook.append_page(&perf_box, Some(&Label::new(Some("Performance"))));
 
         // Startup

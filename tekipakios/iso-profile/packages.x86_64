@@ -39,7 +39,6 @@ pipewire-jack
 wireplumber
 
 # Licensing & Security
-num-bigint-rust
 usbguard
 nftables
 tpm2-tools
