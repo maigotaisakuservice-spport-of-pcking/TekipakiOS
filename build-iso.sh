@@ -75,6 +75,7 @@ fi
 cp tekipakios/config/systemd/*.service "$PROFILE_DIR/airootfs/etc/systemd/system/"
 ln -sf /etc/systemd/system/tekipaki-cdrive.service "$PROFILE_DIR/airootfs/etc/systemd/system/multi-user.target.wants/tekipaki-cdrive.service"
 ln -sf /etc/systemd/system/tekipaki-guardd.service "$PROFILE_DIR/airootfs/etc/systemd/system/multi-user.target.wants/tekipaki-guardd.service"
+ln -sf /etc/systemd/system/tekipaki-init.service "$PROFILE_DIR/airootfs/etc/systemd/system/multi-user.target.wants/tekipaki-init.service"
 
 # 7. Build AUR Packages
 echo "Building AUR Packages..."
@@ -89,16 +90,34 @@ build_aur_pkg() {
     git clone https://aur.archlinux.org/$pkg_name.git "$work_dir"
     chown -R nobody "$work_dir"
     # Run makepkg as nobody, allowing it to use sudo pacman for deps
+    # We use --syncdeps to install dependencies from official repos.
+    # Note: If AUR dependencies are needed, they should be built in order.
     sudo -u nobody bash -c "cd $work_dir && makepkg -sc --noconfirm"
     mkdir -p "$PROFILE_DIR/repo"
     cp "$work_dir"/*.pkg.tar.zst "$PROFILE_DIR/repo/"
+    # Update local repo immediately to satisfy future AUR dependencies
+    repo-add "$PROFILE_DIR/repo/tekipaki.db.tar.gz" "$PROFILE_DIR/repo/"*.pkg.tar.zst
 }
+
+# Ensure local repo is registered in pacman.conf for dependencies
+mkdir -p "$PROFILE_DIR/repo"
+touch "$PROFILE_DIR/repo/tekipaki.db.tar.gz"
+if ! grep -q "\[tekipaki\]" /etc/pacman.conf; then
+    cat <<EOF >> /etc/pacman.conf
+[tekipaki]
+SigLevel = Optional TrustAll
+Server = file://$(pwd)/$PROFILE_DIR/repo
+EOF
+fi
+
+# Build in order to satisfy dependencies
+build_aur_pkg "archlinux-appstream-data-pamac"
+build_aur_pkg "libpamac-aur"
 build_aur_pkg "pamac-aur"
 build_aur_pkg "proton-ge-custom-bin"
-# build_aur_pkg "onlyoffice-bin" # This takes too long for CI usually, but user asked for perfect.
 
-# Create local repo
-repo-add "$PROFILE_DIR/repo/tekipaki.db.tar.gz" "$PROFILE_DIR/repo/"*.pkg.tar.zst
+# Local repo is already updated by build_aur_pkg
+
 if ! grep -q "\[tekipaki\]" "$PROFILE_DIR/pacman.conf"; then
     cat <<EOF >> "$PROFILE_DIR/pacman.conf"
 [tekipaki]

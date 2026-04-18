@@ -52,4 +52,10 @@ proton-ge-custom-bin
 
 # Installer
 calamares
-# pamac-aur (AUR)
+archlinux-appstream-data-pamac
+libpamac-aur
+pamac-aur
+
+# App Stores & Sandbox
+flatpak
+snapd

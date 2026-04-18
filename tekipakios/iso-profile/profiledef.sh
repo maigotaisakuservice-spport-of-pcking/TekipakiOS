@@ -27,4 +27,5 @@ file_permissions=(
   ["/usr/local/bin/tekipaki-calc"]="0:0:755"
   ["/usr/local/bin/tekipaki-taskmgr"]="0:0:755"
   ["/usr/local/bin/tekipaki-tre"]="0:0:755"
+  ["/usr/local/bin/tekipaki-init.sh"]="0:0:755"
 )
