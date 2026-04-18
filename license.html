@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>エンドユーザーライセンス条項 - Tekipaki OS</title>
+    <style>
+        :root { --primary: #0078D4; --bg: #f3f3f3; --text: #202020; --white: #fff; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; line-height: 1.6; }
+        nav { position: fixed; top: 0; width: 100%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); padding: 1rem 0; box-shadow: 0 1px 10px rgba(0,0,0,0.05); display: flex; justify-content: center; gap: 2.5rem; z-index: 1000; }
+        nav a { text-decoration: none; color: var(--text); font-weight: 500; }
+        .container { padding: 120px 20px 60px; max-width: 800px; margin: 0 auto; }
+        .license-box { background: var(--white); padding: 40px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        h1 { border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 30px; }
+        h2 { color: var(--primary); margin-top: 40px; }
+        .warning { background: #fff5f5; border-left: 5px solid #ff4d4d; padding: 20px; margin: 20px 0; color: #cc0000; font-weight: bold; }
+        footer { text-align: center; padding: 40px; color: #666; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">ホーム</a>
+        <a href="download.html">ダウンロード</a>
+        <a href="support.html">サポート</a>
+        <a href="license.html">ライセンス</a>
+    </nav>
+    <div class="container">
+        <div class="license-box">
+            <h1>Tekipaki OS ソフトウェアライセンス条項</h1>
+            <p>本条項は、Tekipaki OS Project とお客様との間での法的合意を構成します。本ソフトウェアをインストールまたは使用することにより、お客様は本条項に同意したものとみなされます。</p>
+
+            <h2>1. ライセンスの付与</h2>
+            <p>本ソフトウェアは、有効なライセンスキーを使用してアクティベーションされた場合にのみ、そのエディション（Home, Pro, Enterprise）に応じた機能を使用する権利が付与されます。</p>
+
+            <h2>2. Guard システムによる保護</h2>
+            <p>Tekipaki OS には、システムの完全性を保護し不正使用を防止するための「Tekipaki-Guard」システムが搭載されています。</p>
+            <ul>
+                <li>ライセンスの改ざん、デバッグ、リバースエンジニアリングは固く禁じられています。</li>
+                <li>システム時計の大幅な巻き戻しや、NTPサーバーの偽装による試用期間の延長試行は不正行為とみなされます。</li>
+            </ul>
+
+            <div class="warning">
+                <h3>重要：違反時の「デス・ペナルティ」について</h3>
+                <p>Tekipaki-Guard が重大なライセンス違反または悪意のあるシステム操作を検知した場合、システムは直ちに停止し、回復不能なデータ消去（Disk Wipe）を実行する場合があります。これにより発生したデータの損失について、プロジェクトは一切の責任を負いません。常に正当なライセンスを使用してください。</p>
+            </div>
+
+            <h2>3. リカバリ環境 (TRE)</h2>
+            <p>F11キーからアクセス可能な Tekipaki Recovery Environment (TRE) は、OSの修復および再インストールを支援するために提供されます。自己修復機能（Self-Healing）はベストエフォートで提供されるものであり、すべての修復を保証するものではありません。</p>
+
+            <h2>4. 免責事項</h2>
+            <p>本ソフトウェアは「現状有姿」で提供され、明示的か黙示的かに関わらず、商品性、特定の目的への適合性、非侵害性を含むいかなる保証も行いません。</p>
+        </div>
+    </div>
+    <footer>
+        &copy; 2024 Tekipaki OS Project. All rights reserved.
+    </footer>
+</body>
+</html>
