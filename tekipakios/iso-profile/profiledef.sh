@@ -18,4 +18,13 @@ file_permissions=(
   ["/etc/shadow"]="0:0:400"
   ["/root"]="0:0:700"
   ["/usr/local/bin/tekipaki-setup"]="0:0:755"
+  ["/usr/local/bin/tekipaki-guardd"]="0:0:755"
+  ["/usr/local/bin/tekipaki-cli"]="0:0:755"
+  ["/usr/local/bin/tekipaki-keygen"]="0:0:755"
+  ["/usr/local/bin/tekipaki-settings"]="0:0:755"
+  ["/usr/local/bin/tekipaki-note"]="0:0:755"
+  ["/usr/local/bin/tekipaki-paint"]="0:0:755"
+  ["/usr/local/bin/tekipaki-calc"]="0:0:755"
+  ["/usr/local/bin/tekipaki-taskmgr"]="0:0:755"
+  ["/usr/local/bin/tekipaki-tre"]="0:0:755"
 )

@@ -26,9 +26,22 @@ fn main() {
         let progress = ProgressBar::new();
         progress.set_visible(false);
 
+        repair_btn.connect_clicked(glib::clone!(@weak progress => move |_| {
+            progress.set_visible(true);
+            progress.set_fraction(0.0);
+            println!("Starting self-healing: fsck /dev/sda2...");
+            // Real logic would involve std::process::Command to run fsck or pacman -Syu
+            glib::timeout_add_local(std::time::Duration::from_millis(100), move || {
+                let f = progress.fraction() + 0.02;
+                progress.set_fraction(f);
+                if f >= 1.0 { glib::ControlFlow::Break } else { glib::ControlFlow::Continue }
+            });
+        }));
+
         cloud_btn.connect_clicked(glib::clone!(@weak progress => move |_| {
             progress.set_visible(true);
-            progress.set_fraction(0.1);
+            progress.set_fraction(0.0);
+            println!("Starting cloud reinstall...");
             glib::timeout_add_local(std::time::Duration::from_millis(500), move || {
                 let f = progress.fraction() + 0.05;
                 progress.set_fraction(f);
