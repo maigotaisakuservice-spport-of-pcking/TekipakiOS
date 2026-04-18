@@ -5,11 +5,8 @@ set -e
 
 echo "Starting Tekipaki OS v1.6 ISO Build..."
 
-# 1. Build Rust binaries (Skip if in CI, handled by host)
-if [ "$CI" != "true" ]; then
-    echo "Building Tekipaki AppSet and Guard..."
-    cargo build --release
-fi
+# 1. Build Rust binaries (Skip if in CI, handled by host - but wait, we need to build for Arch)
+# We will build Rust binaries inside the Arch container in step 8
 
 # 2. Build Custom Kernel (linux-tekipaki)
 echo "Building Custom Kernel: linux-tekipaki (based on Zen)..."
@@ -56,10 +53,24 @@ initrd  /boot/initramfs-linux-tekipaki.img
 options archisobasedir=arch archisolabel=TEKIPAKI_$(date +%Y%m)
 EOF
 
+# Add F11 Recovery Entry
+RECOVERY_ENTRY="$PROFILE_DIR/efiboot/loader/entries/tekipaki-recovery.conf"
+cat <<EOF > "$RECOVERY_ENTRY"
+title   Tekipaki Recovery Environment (TRE)
+linux   /boot/vmlinuz-linux-tekipaki
+initrd  /boot/initramfs-linux-tekipaki.img
+options archisobasedir=arch archisolabel=TEKIPAKI_$(date +%Y%m) tekipaki_recovery=1
+EOF
+
+# Note: F11 mapping usually requires GRUB or systemd-boot with specific patches or config.
+# For systemd-boot, we set the recovery as a secondary entry.
+
 # Remove symlinks to build/source in airootfs to save space
 find "$PROFILE_DIR/airootfs/usr/lib/modules" -type l -delete
 
-# 5. Inject Rust Binaries
+# 5. Build and Inject Rust Binaries (Inside Arch environment)
+echo "Building Tekipaki AppSet and Guard for Arch Linux..."
+cargo build --release
 echo "Injecting binaries into airootfs..."
 mkdir -p "$PROFILE_DIR/airootfs/usr/local/bin"
 cp target/release/tekipaki-* "$PROFILE_DIR/airootfs/usr/local/bin/"

@@ -28,15 +28,7 @@ jobs:
     - name: Rust Cache
       uses: Swatinem/rust-cache@v2
 
-    - name: Build Custom Apps (Tekipaki-AppSet)
-      env:
-        TEKIPAKI_PRIVATE_KEY: ${{ secrets.TEKIPAKI_PRIVATE_KEY }}
-      run: |
-        cargo build --release
-        mkdir -p bin
-        cp target/release/tekipaki-* bin/
-
-    - name: Build Perfect OS (Kernel, AUR, ISO)
+    - name: Build Perfect OS (Kernel, Rust Apps, AUR, ISO)
       run: |
         # Run everything inside a privileged Arch Linux container for consistency
         docker run --rm --privileged \
