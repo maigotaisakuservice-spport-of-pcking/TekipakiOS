@@ -94,6 +94,7 @@ build_aur_pkg() {
     cp "$work_dir"/*.pkg.tar.zst "$PROFILE_DIR/repo/"
 }
 build_aur_pkg "pamac-aur"
+build_aur_pkg "proton-ge-custom-bin"
 # build_aur_pkg "onlyoffice-bin" # This takes too long for CI usually, but user asked for perfect.
 
 # Create local repo

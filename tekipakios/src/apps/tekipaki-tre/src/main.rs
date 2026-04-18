@@ -2,6 +2,8 @@ use gtk4 as gtk;
 use gtk::prelude::*;
 use gtk::{Application, ApplicationWindow, Label, Box, Orientation, Button, ProgressBar};
 
+mod recovery_logic;
+
 fn main() {
     let app = Application::builder().application_id("com.tekipaki.tre").build();
     app.connect_activate(|app| {

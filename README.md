@@ -31,15 +31,25 @@ Tekipaki OS uses a customized **Calamares** installer for a seamless setup exper
 
 ---
 
-## 🛡 Guard System & Licensing
+## 🛡 Security Architecture
 
+Tekipaki OS is designed with a multi-layered security approach.
+
+### 1. Guard System & Licensing
 The **Guard System** ensures the integrity and legal usage of Tekipaki OS.
-
-### Licensing Mechanism
 - **Algorithm**: Uses modular exponentiation with a 25-character Base29 key. Valid keys must satisfy $f(K) \pmod n = 0$ where $n$ corresponds to the edition (Home=3, Pro=5, Enterprise=8).
 - **Death Penalty**: If the license is found to be invalid or tampered with, the `tekipaki-guardd` daemon will:
     1. Display a 0x8004DEAD BSOD.
     2. Wipe the MBR/GPT of the system drive to prevent further unauthorized use.
+
+### 2. Kernel-Level Protection
+- **linux-tekipaki**: Built with Hardened Gentoo-style patches and Zen responsiveness.
+- **Kernel Lockdown**: Prevents unauthorized modifications to the running kernel memory even by the root user (when in Secure Boot mode).
+
+### 3. Network & Hardware Security
+- **nftables**: Pre-configured firewall with a strict "default-deny" policy for incoming connections.
+- **USBGuard**: Protects against BadUSB attacks by authorizing only known USB devices.
+- **TPM 2.0 Integration**: Used for encrypting the DataLocker partition in the Recovery Environment.
 
 ### Keygen Tools
 - **CLI**: `tekipakios/src/guard/tekipaki-keygen/` (Rust-based).
@@ -75,3 +85,21 @@ Accessible by pressing **F11** at boot time.
 - `tekipakios/src/`: Source code for Rust components (Settings, Guard, TRE, etc.).
 - `tekipakios/iso-profile/`: Archiso profile for generating the ISO.
 - `root/`: Website files (Landing page, Download, Support, Keygen).
+
+---
+
+## ⚖️ License & Compliance
+
+### Open Source Basis
+Tekipaki OS is a derivative work based on **Arch Linux**. We respect and adhere to the licenses of our upstream components:
+- **Arch Linux / Archiso**: GPL.
+- **Linux Kernel**: GPLv2.
+- **KDE Plasma**: LGPL / GPL.
+- **Rust Standard Library**: MIT / Apache 2.0.
+
+### Custom Components
+While the base system is open source, the following components are unique to Tekipaki OS:
+- **Tekipaki AppSet & Guard**: Custom source code provided under the Tekipaki Software License (see `license.html`).
+- **Branding & Assets**: All "Tekipaki" logos, wallpapers, and naming conventions are proprietary assets of the Tekipaki OS Project.
+
+Usage of this OS implies acceptance of the EULA, which governs the use of these custom components and the licensing system.

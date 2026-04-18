@@ -3,7 +3,6 @@ use std::fs;
 use std::time::{SystemTime, UNIX_EPOCH, Duration};
 use std::thread;
 
-mod lib;
 mod death_penalty;
 
 const LOCK_FILE: &str = "/var/lib/tekipaki/.lock";
@@ -34,8 +33,8 @@ fn main() {
     let key_file = "/etc/tekipaki/license.key";
     if let Ok(key) = fs::read_to_string(key_file) {
         let k_clean = key.trim().replace("-", "");
-        if let Some(k_int) = lib::base29_to_bigint(&k_clean) {
-            let edition = lib::check_edition(k_int);
+        if let Some(k_int) = guard_lib::base29_to_bigint(&k_clean) {
+            let edition = guard_lib::check_edition(k_int);
             if edition == "Invalid" {
                 println!("Invalid License Detected!");
                 death_penalty::display_bsod();
