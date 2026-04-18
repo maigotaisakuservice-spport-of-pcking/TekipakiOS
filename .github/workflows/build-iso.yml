@@ -45,8 +45,27 @@ jobs:
           /bin/bash -c "pacman -Syu --noconfirm base-devel archiso git bc libelf pahole cpio perl tar xz && \
           bash build-iso.sh"
 
-    - name: Upload ISO Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: TekipakiOS-v1.6-x86_64.iso
-        path: out/*.iso
+    - name: Deploy ISO to Repository and Update Link
+      if: success()
+      run: |
+        # Configure Git
+        git config --global user.name "Tekipaki Build Bot"
+        git config --global user.email "build@tekipaki-os.com"
+
+        # Move ISO to distribution folder
+        mkdir -p dist/isos
+        ISO_FILE=$(ls out/*.iso | head -n 1)
+        ISO_NAME=$(basename "$ISO_FILE")
+        cp "$ISO_FILE" "dist/isos/$ISO_NAME"
+
+        # Rotate: keep only last 2 versions
+        ls -t dist/isos/*.iso | tail -n +3 | xargs -I {} rm -- {} || true
+
+        # Update download.html with latest ISO link
+        sed -i "s|href=\"#\" class=\"btn-download\"|href=\"dist/isos/$ISO_NAME\" class=\"btn-download\"|g" download.html
+        sed -i "s|onclick=\"alert('準備中...')\"||g" download.html
+
+        # Commit and push changes
+        git add dist/isos/ download.html
+        git commit -m "Deploy ISO: $ISO_NAME and update download link [skip ci]"
+        git push origin main
