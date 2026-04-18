@@ -1,0 +1,39 @@
+---
+componentName:  tekipaki
+
+welcomeStyleCalamares:   false
+
+welcomeExpandingLogo:   true
+
+windowExpanding:    normal
+
+windowSize: 800px,520px
+
+windowPlacement: center
+
+sidebar: none
+
+navigation: bottom
+
+strings:
+    productName:         Tekipaki OS
+    shortProductName:    Tekipaki
+    productVersion:      1.6 (Perfect Edition)
+    shortProductVersion: 1.6
+    versionedName:       Tekipaki OS 1.6
+    shortVersionedName:  Tekipaki 1.6
+    bootloaderEntryName: Tekipaki OS
+    productUrl:          https://tekipaki.example.com
+    supportUrl:          https://tekipaki.example.com/support
+    releaseNotesUrl:     https://tekipaki.example.com/notes
+
+images:
+    productLogo:         "logo.png"
+    productIcon:         "logo.png"
+    productWelcome:      "welcome.png"
+
+style:
+   sidebarBackground:    "#f3f3f3"
+   sidebarText:          "#212121"
+   sidebarTextSelect:    "#0067c0"
+   sidebarTextHighlight: "#ffffff"
