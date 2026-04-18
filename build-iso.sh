@@ -31,6 +31,7 @@ mkdir -p "$PROFILE_DIR/airootfs/boot"
 # 4. Inject Kernel and Modules
 echo "Injecting kernel and modules..."
 cp "$KERNEL_DIR/arch/x86/boot/bzImage" "$PROFILE_DIR/airootfs/boot/vmlinuz-linux-tekipaki"
+mkdir -p "$PROFILE_DIR/airootfs/usr/lib/modules"
 make -C "$KERNEL_DIR" INSTALL_MOD_PATH="$(pwd)/$PROFILE_DIR/airootfs" modules_install
 
 # Generate initramfs for the custom kernel
@@ -66,7 +67,9 @@ EOF
 # For systemd-boot, we set the recovery as a secondary entry.
 
 # Remove symlinks to build/source in airootfs to save space
-find "$PROFILE_DIR/airootfs/usr/lib/modules" -type l -delete
+if [ -d "$PROFILE_DIR/airootfs/usr/lib/modules" ]; then
+    find "$PROFILE_DIR/airootfs/usr/lib/modules" -type l -delete
+fi
 
 # 5. Build and Inject Rust Binaries (Inside Arch environment)
 echo "Building Tekipaki AppSet and Guard for Arch Linux..."

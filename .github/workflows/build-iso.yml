@@ -9,6 +9,7 @@ permissions:
   contents: write
 
 env:
+  # Silencing deprecation warnings while ensuring Node 20/24 compatibility
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
@@ -16,11 +17,6 @@ jobs:
     runs-on: self-hosted
     steps:
     - uses: actions/checkout@v4
-
-    - name: Install system dependencies (Host)
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libgtk-4-dev pkg-config docker.io
 
     - name: Set up Rust
       uses: dtolnay/rust-toolchain@stable
@@ -33,11 +29,12 @@ jobs:
         # Run everything inside a privileged Arch Linux container for consistency
         docker run --rm --privileged \
           -v $(pwd):/app \
+          -v /home/github/.cargo/registry:/root/.cargo/registry \
           -e CI=true \
           -e TEKIPAKI_PRIVATE_KEY="${{ secrets.TEKIPAKI_PRIVATE_KEY }}" \
           -w /app \
           archlinux:latest \
-          /bin/bash -c "pacman -Syu --noconfirm base-devel archiso git bc libelf pahole cpio perl tar xz && \
+          /bin/bash -c "pacman -Syu --noconfirm base-devel archiso git bc libelf pahole cpio perl tar xz rust gtk4 pkgconf sudo mkinitcpio kmod && \
           bash build-iso.sh"
 
     - name: Deploy ISO to Repository and Update Link
