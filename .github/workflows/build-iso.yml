@@ -53,8 +53,8 @@ jobs:
         # Rotate: keep only last 2 versions
         ls -t dist/isos/*.iso | tail -n +3 | xargs -I {} rm -- {} || true
 
-        # Update download.html with latest ISO link
-        sed -i "s|href=\"#\" class=\"btn-download\"|href=\"dist/isos/$ISO_NAME\" class=\"btn-download\"|g" download.html
+        # Update download.html with latest ISO link (idempotent)
+        sed -i "s|href=\"[^\"]*\" class=\"btn-download\"|href=\"dist/isos/$ISO_NAME\" class=\"btn-download\"|g" download.html
         sed -i "s|onclick=\"alert('準備中...')\"||g" download.html
 
         # Commit and push changes

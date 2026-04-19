@@ -31,6 +31,13 @@ mkdir -p "$PROFILE_DIR/airootfs/boot"
 # 4. Inject Kernel and Modules
 echo "Injecting kernel and modules..."
 cp "$KERNEL_DIR/arch/x86/boot/bzImage" "$PROFILE_DIR/airootfs/boot/vmlinuz-linux-tekipaki"
+
+# Install modules to the container root first so mkinitcpio can find them easily
+echo "Installing modules to container root for mkinitcpio..."
+make -C "$KERNEL_DIR" INSTALL_MOD_PATH=/ modules_install
+
+# Also install to airootfs for the final ISO
+echo "Installing modules to airootfs..."
 mkdir -p "$PROFILE_DIR/airootfs/usr/lib/modules"
 make -C "$KERNEL_DIR" INSTALL_MOD_PATH="$(pwd)/$PROFILE_DIR/airootfs" modules_install
 
@@ -38,7 +45,7 @@ make -C "$KERNEL_DIR" INSTALL_MOD_PATH="$(pwd)/$PROFILE_DIR/airootfs" modules_in
 echo "Generating initramfs for linux-tekipaki..."
 KVER=$(make -C "$KERNEL_DIR" -s kernelrelease)
 # Failure here is critical, so we must not ignore it.
-mkinitcpio -k "$KVER" -c "$PROFILE_DIR/mkinitcpio.conf" -g "$PROFILE_DIR/airootfs/boot/initramfs-linux-tekipaki.img" -d "$(pwd)/$PROFILE_DIR/airootfs"
+mkinitcpio -k "$KVER" -c "$PROFILE_DIR/mkinitcpio.conf" -g "$PROFILE_DIR/airootfs/boot/initramfs-linux-tekipaki.img"
 
 # Update bootloader entries
 echo "Updating bootloader entries..."
