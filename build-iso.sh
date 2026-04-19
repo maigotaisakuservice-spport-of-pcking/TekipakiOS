@@ -36,12 +36,9 @@ make -C "$KERNEL_DIR" INSTALL_MOD_PATH="$(pwd)/$PROFILE_DIR/airootfs" modules_in
 
 # Generate initramfs for the custom kernel
 echo "Generating initramfs for linux-tekipaki..."
-# We need to run mkinitcpio. Since we are in a container, we might need some trickery
-# but usually archiso's mkinitcpio works.
-# However, we need to point it to the modules we just installed in airootfs
 KVER=$(make -C "$KERNEL_DIR" -s kernelrelease)
-mkinitcpio -k "$KVER" -c "$PROFILE_DIR/mkinitcpio.conf" -g "$PROFILE_DIR/airootfs/boot/initramfs-linux-tekipaki.img" -d "$(pwd)/$PROFILE_DIR/airootfs" || \
-echo "Warning: mkinitcpio failed in container, ensure dependencies are met."
+# Failure here is critical, so we must not ignore it.
+mkinitcpio -k "$KVER" -c "$PROFILE_DIR/mkinitcpio.conf" -g "$PROFILE_DIR/airootfs/boot/initramfs-linux-tekipaki.img" -d "$(pwd)/$PROFILE_DIR/airootfs"
 
 # Update bootloader entries
 echo "Updating bootloader entries..."
@@ -78,11 +75,25 @@ echo "Injecting binaries into airootfs..."
 mkdir -p "$PROFILE_DIR/airootfs/usr/local/bin"
 cp target/release/tekipaki-* "$PROFILE_DIR/airootfs/usr/local/bin/"
 
-# 5b. Inject License Key if present
+# 5b. Secure Component Signing
 if [ -n "$TEKIPAKI_PRIVATE_KEY" ]; then
-    echo "Injecting license key..."
-    mkdir -p "$PROFILE_DIR/airootfs/etc/tekipaki"
-    echo "$TEKIPAKI_PRIVATE_KEY" > "$PROFILE_DIR/airootfs/etc/tekipaki/license.key"
+    echo "Signing core components with TEKIPAKI_PRIVATE_KEY..."
+    # Convert Base64 private key to DER for openssl
+    echo "$TEKIPAKI_PRIVATE_KEY" | base64 -d > /tmp/tekipaki.key
+
+    # Sign all custom binaries
+    mkdir -p "$PROFILE_DIR/airootfs/etc/tekipaki/signatures"
+    for bin in target/release/tekipaki-*; do
+        bin_name=$(basename "$bin")
+        openssl pkeyutl -sign -inkey /tmp/tekipaki.key -rawin -in "$bin" -out "$PROFILE_DIR/airootfs/etc/tekipaki/signatures/$bin_name.sig"
+    done
+
+    # Extract and inject public key for verification
+    openssl pkey -in /tmp/tekipaki.key -pubout -outform DER -out "$PROFILE_DIR/airootfs/etc/tekipaki/public.key"
+    rm /tmp/tekipaki.key
+    echo "Signing complete. Public key injected."
+else
+    echo "Warning: TEKIPAKI_PRIVATE_KEY not set. Skipping component signing."
 fi
 
 # 6. Inject Systemd Services
