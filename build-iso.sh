@@ -18,6 +18,8 @@ cd "$KERNEL_DIR"
 # For now, use the default zen config with some 'tekipaki' branding
 make x86_64_defconfig
 sed -i 's/CONFIG_LOCALVERSION=""/CONFIG_LOCALVERSION="-tekipaki"/' .config
+# Disable LOCALVERSION_AUTO to keep version string clean (no commit hashes)
+sed -i 's/CONFIG_LOCALVERSION_AUTO=y/# CONFIG_LOCALVERSION_AUTO is not set/' .config
 sed -i 's/CONFIG_HZ_1000=y/# CONFIG_HZ_1000 is not set\nCONFIG_HZ_1000=y/' .config # Ensure high responsiveness
 make -j$(nproc) bzImage modules
 cd -
@@ -44,6 +46,8 @@ make -C "$KERNEL_DIR" INSTALL_MOD_PATH="$(pwd)/$PROFILE_DIR/airootfs" modules_in
 # Generate initramfs for the custom kernel
 echo "Generating initramfs for linux-tekipaki..."
 KVER=$(make -C "$KERNEL_DIR" -s kernelrelease)
+# Ensure depmod is run for the new version
+depmod -a "$KVER"
 # Failure here is critical, so we must not ignore it.
 mkinitcpio -k "$KVER" -c "$PROFILE_DIR/mkinitcpio.conf" -g "$PROFILE_DIR/airootfs/boot/initramfs-linux-tekipaki.img"
 
