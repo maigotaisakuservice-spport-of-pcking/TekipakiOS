@@ -17,6 +17,12 @@ To build locally (requires Arch Linux with `archiso` and `base-devel`):
 sudo ./build-iso.sh
 ```
 
+### Permission Fix (Post-build)
+If the build process is run inside a container (like GitHub Actions), some files in the workspace might be owned by root. Run this command to restore ownership to your user:
+```bash
+sudo chown -R $USER:$USER .
+```
+
 ---
 
 ## 🛠 OS Installer (Calamares)
