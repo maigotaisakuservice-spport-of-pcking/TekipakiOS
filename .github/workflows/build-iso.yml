@@ -37,6 +37,10 @@ jobs:
           /bin/bash -c "pacman -Syu --noconfirm base-devel archiso git bc libelf pahole cpio perl tar xz rust gtk4 pkgconf sudo mkinitcpio kmod && \
           bash build-iso.sh"
 
+    - name: Fix permissions
+      if: always()
+      run: sudo chown -R $USER:$USER .
+
     - name: Deploy ISO to Repository and Update Link
       if: success()
       run: |
