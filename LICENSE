@@ -1,0 +1,35 @@
+# Tekipaki OS Project License Information
+
+Tekipaki OS is a composite work consisting of various software components licensed under different terms.
+
+## 1. Open Source Components
+
+Tekipaki OS is built upon the foundation of Arch Linux and other open-source projects. We respect and adhere to the licenses of these upstream components:
+
+- **Arch Linux / Archiso:** Licensed under the GNU General Public License (GPL).
+- **Linux Kernel (linux-tekipaki):** Licensed under the GNU General Public License version 2 (GPLv2).
+- **KDE Plasma & Frameworks:** Licensed under various versions of the GNU General Public License (GPL) and Lesser General Public License (LGPL).
+- **Rust Standard Library:** Licensed under the MIT License or Apache License 2.0.
+
+The source code for these components is available from their respective upstream repositories. Any modifications made specifically for Tekipaki OS to these GPL-licensed components are also made available under the same terms.
+
+## 2. Tekipaki Proprietary Components (EULA)
+
+The following components are unique to the Tekipaki OS Project and are subject to the **Tekipaki OS End User License Agreement (EULA)**:
+
+- **Tekipaki Guard System** (`tekipaki-guardd`, `tekipaki-cli`, `tekipaki-keygen`)
+- **Tekipaki AppSet** (`tekipaki-settings`, `tekipaki-taskmgr`, `tekipaki-tre`, etc.)
+- **Tekipaki Custom Branding & Assets** (Logos, Wallpapers, UI Stylesheets)
+
+### Tekipaki OS End User License Agreement (EULA)
+
+By installing or using Tekipaki OS, you agree to the following terms:
+
+1. **License Grant:** A non-exclusive license is granted to use the proprietary components only with a valid EULA key.
+2. **Mathematical Validation:** Your license edition (Home, Pro, Enterprise) is determined by the mathematical properties of your EULA key.
+3. **Integrity Protection:** Modifications, reverse engineering, or tampering with the Guard System or signed components is strictly prohibited.
+4. **Enforcement (The "Death Penalty"):** Tekipaki OS includes an automated integrity enforcement mechanism. In the event of confirmed license violations or severe system tampering, the system may initiate a permanent disk wipe ("Death Penalty") after providing opportunities for key re-entry. The project is not liable for data loss resulting from license violations.
+5. **Usage:** This software is provided "as is" without warranty of any kind.
+
+---
+© 2024 Tekipaki OS Project. All rights reserved.
