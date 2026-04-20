@@ -32,13 +32,18 @@ sed -i 's/CONFIG_HZ_1000=y/# CONFIG_HZ_1000 is not set\nCONFIG_HZ_1000=y/' .conf
 ./scripts/config --enable CONFIG_SQUASHFS_XZ
 ./scripts/config --enable CONFIG_SQUASHFS_ZSTD
 ./scripts/config --enable CONFIG_DM_SNAPSHOT
-./scripts/config --module CONFIG_NBD
+./scripts/config --enable CONFIG_MTD
 ./scripts/config --module CONFIG_PHRAM
 ./scripts/config --module CONFIG_MTD_BLOCK
+./scripts/config --enable CONFIG_NET
+./scripts/config --module CONFIG_NBD
 ./scripts/config --enable CONFIG_BLK_DEV_LOOP
 ./scripts/config --enable CONFIG_BLK_DEV_INITRD
 ./scripts/config --enable CONFIG_HZ_1000
 ./scripts/config --undefine CONFIG_LOCALVERSION_AUTO
+
+# Fix "+" suffix in version by creating an empty .scmversion
+touch .scmversion
 
 make olddefconfig
 make -j$(nproc) bzImage modules
