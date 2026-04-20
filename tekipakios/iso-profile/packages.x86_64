@@ -43,6 +43,13 @@ usbguard
 nftables
 tpm2-tools
 
+# Recovery & Installation Tools (for TRE)
+arch-install-scripts
+e2fsprogs
+dosfstools
+grub
+efibootmgr
+
 # Apps
 firefox
 # onlyoffice-bin (AUR)

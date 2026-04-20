@@ -34,8 +34,10 @@ mkdir -p "$PROFILE_DIR/airootfs/boot"
 echo "Injecting kernel and modules..."
 cp "$KERNEL_DIR/arch/x86/boot/bzImage" "$PROFILE_DIR/airootfs/boot/vmlinuz-linux-tekipaki"
 
-# Install modules to the container root first so mkinitcpio can find them easily
-echo "Installing modules to container root for mkinitcpio..."
+# Install kernel and modules to the container root first so mkinitcpio can find them easily
+echo "Installing kernel and modules to container root for mkinitcpio..."
+KVER_INTERNAL=$(make -C "$KERNEL_DIR" -s kernelrelease)
+cp "$KERNEL_DIR/arch/x86/boot/bzImage" "/boot/vmlinuz-$KVER_INTERNAL"
 make -C "$KERNEL_DIR" INSTALL_MOD_PATH=/ modules_install
 
 # Also install to airootfs for the final ISO
@@ -116,9 +118,11 @@ fi
 
 # 6. Inject Systemd Services
 cp tekipakios/config/systemd/*.service "$PROFILE_DIR/airootfs/etc/systemd/system/"
+cp tekipakios/config/systemd/*.timer "$PROFILE_DIR/airootfs/etc/systemd/system/"
 ln -sf /etc/systemd/system/tekipaki-cdrive.service "$PROFILE_DIR/airootfs/etc/systemd/system/multi-user.target.wants/tekipaki-cdrive.service"
 ln -sf /etc/systemd/system/tekipaki-guardd.service "$PROFILE_DIR/airootfs/etc/systemd/system/multi-user.target.wants/tekipaki-guardd.service"
 ln -sf /etc/systemd/system/tekipaki-init.service "$PROFILE_DIR/airootfs/etc/systemd/system/multi-user.target.wants/tekipaki-init.service"
+ln -sf /etc/systemd/system/tekipaki-update-check.timer "$PROFILE_DIR/airootfs/etc/systemd/system/timers.target.wants/tekipaki-update-check.timer"
 
 # 7. Build AUR Packages
 echo "Building AUR Packages..."
