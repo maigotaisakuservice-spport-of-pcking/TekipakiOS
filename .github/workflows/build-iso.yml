@@ -34,7 +34,7 @@ jobs:
           -w /app \
           archlinux:latest \
           /bin/bash -c "pacman-key --init && pacman-key --populate archlinux && \
-          pacman -Syu --noconfirm base-devel archiso git bc libelf pahole cpio perl tar xz rust gtk4 pkgconf sudo mkinitcpio kmod mkinitcpio-archiso arch-install-scripts binutils openssl flex bison grub libisoburn mtools dosfstools python && \
+          pacman -Syu --noconfirm base-devel archiso git bc libelf pahole cpio perl tar xz rust gtk4 pkgconf mkinitcpio kmod mkinitcpio-archiso mkinitcpio-nfsutils arch-install-scripts binutils openssl flex bison grub libisoburn mtools dosfstools python nbd pv syslinux && \
           bash build-iso.sh"
 
     - name: Deploy ISO to Repository and Update Link
