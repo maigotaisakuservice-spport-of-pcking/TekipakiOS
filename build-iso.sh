@@ -46,10 +46,14 @@ make -C "$KERNEL_DIR" INSTALL_MOD_PATH="$(pwd)/$PROFILE_DIR/airootfs" modules_in
 # Generate initramfs for the custom kernel
 echo "Generating initramfs for linux-tekipaki..."
 KVER=$(make -C "$KERNEL_DIR" -s kernelrelease)
-# Ensure depmod is run for the new version
-depmod -a "$KVER"
+
+# Ensure depmod is run for the new version, relative to the airootfs
+echo "Generating module dependencies..."
+depmod -a -b "$(pwd)/$PROFILE_DIR/airootfs" "$KVER"
+
 # Failure here is critical, so we must not ignore it.
-mkinitcpio -k "$KVER" -c "$PROFILE_DIR/mkinitcpio.conf" -g "$PROFILE_DIR/airootfs/boot/initramfs-linux-tekipaki.img"
+# We use -r to set the root for mkinitcpio so it finds modules in airootfs/lib/modules
+mkinitcpio -k "$KVER" -c "$PROFILE_DIR/mkinitcpio.conf" -g "$PROFILE_DIR/airootfs/boot/initramfs-linux-tekipaki.img" -r "$(pwd)/$PROFILE_DIR/airootfs"
 
 # Update bootloader entries
 echo "Updating bootloader entries..."
@@ -125,10 +129,16 @@ build_aur_pkg() {
     mkdir -p "$work_dir"
     git clone https://aur.archlinux.org/$pkg_name.git "$work_dir"
     chown -R nobody "$work_dir"
+
+    # Import GPG keys if the package requires them
+    if [ "$pkg_name" == "proton-ge-custom-bin" ]; then
+        sudo -u nobody gpg --recv-keys 161D67634F754D22 || true
+    fi
+
     # Run makepkg as nobody, allowing it to use sudo pacman for deps
-    # We use --syncdeps to install dependencies from official repos.
-    # Note: If AUR dependencies are needed, they should be built in order.
-    sudo -u nobody bash -c "cd $work_dir && makepkg -sc --noconfirm"
+    # We use --needed to avoid re-installing base-devel components
+    sudo -u nobody bash -c "cd $work_dir && makepkg -sc --noconfirm --needed"
+
     mkdir -p "$PROFILE_DIR/repo"
     cp "$work_dir"/*.pkg.tar.zst "$PROFILE_DIR/repo/"
     # Update local repo immediately to satisfy future AUR dependencies
@@ -136,10 +146,15 @@ build_aur_pkg() {
 }
 
 # Ensure local repo is registered in pacman.conf for dependencies
-mkdir -p "$PROFILE_DIR/repo"
-touch "$PROFILE_DIR/repo/tekipaki.db.tar.gz"
+mkdir -p "$(pwd)/$PROFILE_DIR/repo"
+# Create an empty db if it doesn't exist to prevent pacman errors
+if [ ! -f "$PROFILE_DIR/repo/tekipaki.db.tar.gz" ]; then
+    tar czf "$PROFILE_DIR/repo/tekipaki.db.tar.gz" -T /dev/null
+fi
+
 if ! grep -q "\[tekipaki\]" /etc/pacman.conf; then
     cat <<EOF >> /etc/pacman.conf
+
 [tekipaki]
 SigLevel = Optional TrustAll
 Server = file://$(pwd)/$PROFILE_DIR/repo

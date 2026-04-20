@@ -16,6 +16,11 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
+    - name: Cleanup workspace
+      run: |
+        sudo rm -rf "${{ github.workspace }}" || true
+        mkdir -p "${{ github.workspace }}"
+
     - uses: actions/checkout@v4
 
     - name: Set up Rust
@@ -34,8 +39,10 @@ jobs:
           -e TEKIPAKI_PRIVATE_KEY="${{ secrets.TEKIPAKI_PRIVATE_KEY }}" \
           -w /app \
           archlinux:latest \
-          /bin/bash -c "pacman -Syu --noconfirm base-devel archiso git bc libelf pahole cpio perl tar xz rust gtk4 pkgconf sudo mkinitcpio kmod && \
-          bash build-iso.sh"
+          /bin/bash -c "pacman-key --init && pacman-key --populate archlinux && \
+          pacman -Syu --noconfirm base-devel archiso git bc libelf pahole cpio perl tar xz rust gtk4 pkgconf sudo mkinitcpio kmod mkinitcpio-archiso arch-install-scripts binutils openssl && \
+          bash build-iso.sh && \
+          chmod -R 777 ."
 
     - name: Deploy ISO to Repository and Update Link
       if: success()
