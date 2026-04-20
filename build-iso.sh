@@ -122,8 +122,10 @@ ln -sf /etc/systemd/system/tekipaki-init.service "$PROFILE_DIR/airootfs/etc/syst
 
 # 7. Build AUR Packages
 echo "Building AUR Packages..."
-# Prepare nobody user for sudo (required for makepkg -s)
-echo "nobody ALL=(ALL) NOPASSWD: /usr/bin/pacman" > /etc/sudoers.d/nobody-pacman
+# Create a dedicated builder user (makepkg cannot run as root)
+useradd -m builder || true
+# Allow builder to use pacman without password (required for makepkg -s)
+echo "builder ALL=(ALL) NOPASSWD: /usr/bin/pacman" > /etc/sudoers.d/builder-pacman
 
 build_aur_pkg() {
     local pkg_name=$1
@@ -131,16 +133,16 @@ build_aur_pkg() {
     echo "Building $pkg_name..."
     mkdir -p "$work_dir"
     git clone https://aur.archlinux.org/$pkg_name.git "$work_dir"
-    chown -R nobody "$work_dir"
+    chown -R builder "$work_dir"
 
     # Import GPG keys if the package requires them
     if [ "$pkg_name" == "proton-ge-custom-bin" ]; then
-        sudo -u nobody gpg --recv-keys 161D67634F754D22 || true
+        runuser -l builder -c "gpg --recv-keys 161D67634F754D22" || true
     fi
 
-    # Run makepkg as nobody, allowing it to use sudo pacman for deps
-    # We use --needed to avoid re-installing base-devel components
-    sudo -u nobody bash -c "cd $work_dir && makepkg -sc --noconfirm --needed"
+    # Run makepkg as builder, allowing it to use sudo pacman for deps
+    # We use runuser to avoid using 'sudo' command directly in the script flow where possible
+    runuser -l builder -c "cd $work_dir && makepkg -sc --noconfirm --needed"
 
     mkdir -p "$PROFILE_DIR/repo"
     cp "$work_dir"/*.pkg.tar.zst "$PROFILE_DIR/repo/"

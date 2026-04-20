@@ -14,21 +14,8 @@ env:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
-    - name: Pre-flight Check (Docker)
-      run: |
-        if ! command -v docker &> /dev/null; then
-          echo "ERROR: Docker is not installed on this runner."
-          echo "Please install Docker: sudo apt-get install -y docker.io && sudo usermod -aG docker \$USER"
-          exit 1
-        fi
-
-    - name: Cleanup workspace
-      run: |
-        sudo rm -rf "${{ github.workspace }}" || true
-        mkdir -p "${{ github.workspace }}"
-
     - uses: actions/checkout@v4
 
     - name: Set up Rust
@@ -42,15 +29,13 @@ jobs:
         # Run everything inside a privileged Arch Linux container for consistency
         docker run --rm --privileged \
           -v $(pwd):/app \
-          -v /home/github/.cargo/registry:/root/.cargo/registry \
           -e CI=true \
           -e TEKIPAKI_PRIVATE_KEY="${{ secrets.TEKIPAKI_PRIVATE_KEY }}" \
           -w /app \
           archlinux:latest \
           /bin/bash -c "pacman-key --init && pacman-key --populate archlinux && \
           pacman -Syu --noconfirm base-devel archiso git bc libelf pahole cpio perl tar xz rust gtk4 pkgconf sudo mkinitcpio kmod mkinitcpio-archiso arch-install-scripts binutils openssl flex bison grub libisoburn mtools dosfstools python && \
-          bash build-iso.sh && \
-          chmod -R 777 ."
+          bash build-iso.sh"
 
     - name: Deploy ISO to Repository and Update Link
       if: success()
