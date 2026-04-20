@@ -30,4 +30,6 @@ file_permissions=(
   ["/usr/local/bin/tekipaki-init.sh"]="0:0:755"
   ["/usr/local/bin/tekipaki-reboot-countdown.sh"]="0:0:755"
   ["/usr/local/bin/tekipaki-update-check.sh"]="0:0:755"
+  ["/usr/lib/initcpio/install/archiso"]="0:0:755"
+  ["/usr/lib/initcpio/hooks/archiso"]="0:0:755"
 )

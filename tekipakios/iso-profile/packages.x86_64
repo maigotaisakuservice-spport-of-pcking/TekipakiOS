@@ -49,6 +49,8 @@ e2fsprogs
 dosfstools
 grub
 efibootmgr
+mkinitcpio
+mkinitcpio-archiso
 
 # Apps
 firefox

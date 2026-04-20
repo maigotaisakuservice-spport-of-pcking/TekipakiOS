@@ -23,21 +23,22 @@ sed -i 's/CONFIG_LOCALVERSION_AUTO=y/# CONFIG_LOCALVERSION_AUTO is not set/' .co
 sed -i 's/CONFIG_HZ_1000=y/# CONFIG_HZ_1000 is not set\nCONFIG_HZ_1000=y/' .config # Ensure high responsiveness
 
 # Archiso & Systemd Requirements
-cat <<EOF >> .config
-CONFIG_OVERLAY_FS=y
-CONFIG_SQUASHFS=y
-CONFIG_SQUASHFS_XATTR=y
-CONFIG_SQUASHFS_ZLIB=y
-CONFIG_SQUASHFS_LZO=y
-CONFIG_SQUASHFS_XZ=y
-CONFIG_SQUASHFS_ZSTD=y
-CONFIG_DM_SNAPSHOT=y
-CONFIG_NBD=m
-CONFIG_PHRAM=m
-CONFIG_MTD_BLOCK=m
-CONFIG_BLK_DEV_LOOP=y
-CONFIG_BLK_DEV_INITRD=y
-EOF
+# Use the scripts/config utility for reliable configuration
+./scripts/config --enable CONFIG_OVERLAY_FS
+./scripts/config --enable CONFIG_SQUASHFS
+./scripts/config --enable CONFIG_SQUASHFS_XATTR
+./scripts/config --enable CONFIG_SQUASHFS_ZLIB
+./scripts/config --enable CONFIG_SQUASHFS_LZO
+./scripts/config --enable CONFIG_SQUASHFS_XZ
+./scripts/config --enable CONFIG_SQUASHFS_ZSTD
+./scripts/config --enable CONFIG_DM_SNAPSHOT
+./scripts/config --module CONFIG_NBD
+./scripts/config --module CONFIG_PHRAM
+./scripts/config --module CONFIG_MTD_BLOCK
+./scripts/config --enable CONFIG_BLK_DEV_LOOP
+./scripts/config --enable CONFIG_BLK_DEV_INITRD
+./scripts/config --enable CONFIG_HZ_1000
+./scripts/config --undefine CONFIG_LOCALVERSION_AUTO
 
 make olddefconfig
 make -j$(nproc) bzImage modules
@@ -178,17 +179,20 @@ build_aur_pkg() {
 
 # Ensure local repo is registered in pacman.conf for dependencies
 mkdir -p "$(pwd)/$PROFILE_DIR/repo"
+# Symbolic link for consistent pathing inside container and ISO build
+ln -sf "$(pwd)/$PROFILE_DIR/repo" /repo
+
 # Create an empty db if it doesn't exist to prevent pacman errors
 if [ ! -f "$PROFILE_DIR/repo/tekipaki.db.tar.gz" ]; then
     tar czf "$PROFILE_DIR/repo/tekipaki.db.tar.gz" -T /dev/null
 fi
 
-if ! grep -q "Server = file://$(pwd)/$PROFILE_DIR/repo" /etc/pacman.conf; then
+if ! grep -q "Server = file:///repo" /etc/pacman.conf; then
     cat <<EOF >> /etc/pacman.conf
 
 [tekipaki-local]
 SigLevel = Optional TrustAll
-Server = file://$(pwd)/$PROFILE_DIR/repo
+Server = file:///repo
 EOF
 fi
 
@@ -212,6 +216,8 @@ fi
 echo "Starting mkarchiso..."
 # Clear pacman cache to maximize space before ISO generation
 pacman -Scc --noconfirm
-mkarchiso -v -w /tmp/archiso-tmp -o out "$PROFILE_DIR"
+# Use a work directory in the workspace to ensure we have enough space
+mkdir -p archiso-tmp
+mkarchiso -v -w "$(pwd)/archiso-tmp" -o out "$PROFILE_DIR"
 
 echo "Build complete."

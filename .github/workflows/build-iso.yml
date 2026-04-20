@@ -34,6 +34,8 @@ jobs:
           -w /app \
           archlinux:latest \
           /bin/bash -c "pacman-key --init && pacman-key --populate archlinux && \
+        pacman -Sy --noconfirm archlinux-keyring && \
+        pacman-key --populate archlinux && \
           pacman -Syu --noconfirm base-devel archiso git bc libelf pahole cpio perl tar xz rust gtk4 pkgconf mkinitcpio kmod mkinitcpio-archiso mkinitcpio-nfs-utils linux-firmware arch-install-scripts binutils openssl flex bison grub libisoburn mtools dosfstools python nbd pv syslinux sudo && \
           bash build-iso.sh && \
           chown -R 1001:1001 out/ download.html"
