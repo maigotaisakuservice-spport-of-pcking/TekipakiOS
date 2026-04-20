@@ -16,6 +16,14 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
+    - name: Pre-flight Check (Docker)
+      run: |
+        if ! command -v docker &> /dev/null; then
+          echo "ERROR: Docker is not installed on this runner."
+          echo "Please install Docker: sudo apt-get install -y docker.io && sudo usermod -aG docker \$USER"
+          exit 1
+        fi
+
     - name: Cleanup workspace
       run: |
         sudo rm -rf "${{ github.workspace }}" || true
@@ -40,7 +48,7 @@ jobs:
           -w /app \
           archlinux:latest \
           /bin/bash -c "pacman-key --init && pacman-key --populate archlinux && \
-          pacman -Syu --noconfirm base-devel archiso git bc libelf pahole cpio perl tar xz rust gtk4 pkgconf sudo mkinitcpio kmod mkinitcpio-archiso arch-install-scripts binutils openssl && \
+          pacman -Syu --noconfirm base-devel archiso git bc libelf pahole cpio perl tar xz rust gtk4 pkgconf sudo mkinitcpio kmod mkinitcpio-archiso arch-install-scripts binutils openssl flex bison grub libisoburn mtools dosfstools python && \
           bash build-iso.sh && \
           chmod -R 777 ."
 

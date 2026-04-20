@@ -8,6 +8,8 @@ The build process is fully automated via GitHub Actions using a **self-hosted ru
 
 ### Prerequisites for GitHub Actions
 1.  **Self-hosted Runner**: Setup a self-hosted runner with Docker installed.
+    *   **Install Docker (Ubuntu/Debian)**: `sudo apt-get update && sudo apt-get install -y docker.io && sudo usermod -aG docker $USER`
+    *   **Verify**: Run `docker --version` to ensure the runner can access the daemon.
 2.  **GitHub Secrets**: Add the following secret to your repository:
     -   `TEKIPAKI_PRIVATE_KEY`: The private key used for licensing and secure component signing.
 

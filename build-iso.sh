@@ -47,13 +47,16 @@ make -C "$KERNEL_DIR" INSTALL_MOD_PATH="$(pwd)/$PROFILE_DIR/airootfs" modules_in
 echo "Generating initramfs for linux-tekipaki..."
 KVER=$(make -C "$KERNEL_DIR" -s kernelrelease)
 
-# Ensure depmod is run for the new version, relative to the airootfs
+# Ensure depmod is run for the new version
 echo "Generating module dependencies..."
+# 1. For the build container environment
+depmod -a "$KVER"
+# 2. For the ISO's root filesystem
 depmod -a -b "$(pwd)/$PROFILE_DIR/airootfs" "$KVER"
 
 # Failure here is critical, so we must not ignore it.
-# We use -r to set the root for mkinitcpio so it finds modules in airootfs/lib/modules
-mkinitcpio -k "$KVER" -c "$PROFILE_DIR/mkinitcpio.conf" -g "$PROFILE_DIR/airootfs/boot/initramfs-linux-tekipaki.img" -r "$(pwd)/$PROFILE_DIR/airootfs"
+# We run mkinitcpio. It will search in /lib/modules (container) by default.
+mkinitcpio -k "$KVER" -c "$PROFILE_DIR/mkinitcpio.conf" -g "$PROFILE_DIR/airootfs/boot/initramfs-linux-tekipaki.img"
 
 # Update bootloader entries
 echo "Updating bootloader entries..."
