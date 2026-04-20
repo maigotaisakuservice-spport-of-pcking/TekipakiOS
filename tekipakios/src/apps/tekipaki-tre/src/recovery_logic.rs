@@ -76,7 +76,7 @@ pub fn cloud_reinstall() -> Result<(), String> {
     // 2. Mount and Pacstrap
     let _ = Command::new("mount").args([&dev, "/mnt"]).status();
     let status = Command::new("pacstrap")
-        .args(["/mnt", "base", "linux-tekipaki", "tekipaki-meta", "kde-plasma-meta", "grub"])
+        .args(["/mnt", "base", "linux-tekipaki", "plasma-desktop", "grub", "tekipaki-guardd"])
         .status();
 
     // 3. Generate fstab

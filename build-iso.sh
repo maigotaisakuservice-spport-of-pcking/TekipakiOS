@@ -21,6 +21,25 @@ sed -i 's/CONFIG_LOCALVERSION=""/CONFIG_LOCALVERSION="-tekipaki"/' .config
 # Disable LOCALVERSION_AUTO to keep version string clean (no commit hashes)
 sed -i 's/CONFIG_LOCALVERSION_AUTO=y/# CONFIG_LOCALVERSION_AUTO is not set/' .config
 sed -i 's/CONFIG_HZ_1000=y/# CONFIG_HZ_1000 is not set\nCONFIG_HZ_1000=y/' .config # Ensure high responsiveness
+
+# Archiso & Systemd Requirements
+cat <<EOF >> .config
+CONFIG_OVERLAY_FS=y
+CONFIG_SQUASHFS=y
+CONFIG_SQUASHFS_XATTR=y
+CONFIG_SQUASHFS_ZLIB=y
+CONFIG_SQUASHFS_LZO=y
+CONFIG_SQUASHFS_XZ=y
+CONFIG_SQUASHFS_ZSTD=y
+CONFIG_DM_SNAPSHOT=y
+CONFIG_NBD=m
+CONFIG_PHRAM=m
+CONFIG_MTD_BLOCK=m
+CONFIG_BLK_DEV_LOOP=y
+CONFIG_BLK_DEV_INITRD=y
+EOF
+
+make olddefconfig
 make -j$(nproc) bzImage modules
 cd -
 
@@ -32,12 +51,12 @@ mkdir -p "$PROFILE_DIR/airootfs/boot"
 
 # 4. Inject Kernel and Modules
 echo "Injecting kernel and modules..."
+KVER=$(make -C "$KERNEL_DIR" -s kernelrelease)
 cp "$KERNEL_DIR/arch/x86/boot/bzImage" "$PROFILE_DIR/airootfs/boot/vmlinuz-linux-tekipaki"
 
 # Install kernel and modules to the container root first so mkinitcpio can find them easily
 echo "Installing kernel and modules to container root for mkinitcpio..."
-KVER_INTERNAL=$(make -C "$KERNEL_DIR" -s kernelrelease)
-cp "$KERNEL_DIR/arch/x86/boot/bzImage" "/boot/vmlinuz-$KVER_INTERNAL"
+cp "$KERNEL_DIR/arch/x86/boot/bzImage" "/boot/vmlinuz-$KVER"
 make -C "$KERNEL_DIR" INSTALL_MOD_PATH=/ modules_install
 
 # Also install to airootfs for the final ISO
@@ -45,9 +64,8 @@ echo "Installing modules to airootfs..."
 mkdir -p "$PROFILE_DIR/airootfs/usr/lib/modules"
 make -C "$KERNEL_DIR" INSTALL_MOD_PATH="$(pwd)/$PROFILE_DIR/airootfs" modules_install
 
-# Generate initramfs for the custom kernel
+# Generate initramfs for the custom kernel BEFORE cleaning up, just in case
 echo "Generating initramfs for linux-tekipaki..."
-KVER=$(make -C "$KERNEL_DIR" -s kernelrelease)
 
 # Ensure depmod is run for the new version
 echo "Generating module dependencies..."
@@ -59,6 +77,10 @@ depmod -a -b "$(pwd)/$PROFILE_DIR/airootfs" "$KVER"
 # Failure here is critical, so we must not ignore it.
 # We run mkinitcpio. It will search in /lib/modules (container) by default.
 mkinitcpio -k "$KVER" -c "$PROFILE_DIR/mkinitcpio.conf" -g "$PROFILE_DIR/airootfs/boot/initramfs-linux-tekipaki.img"
+
+# Now we can safely clean up kernel source
+echo "Cleaning up kernel source..."
+rm -rf "$KERNEL_DIR"
 
 # Update bootloader entries
 echo "Updating bootloader entries..."
@@ -161,10 +183,10 @@ if [ ! -f "$PROFILE_DIR/repo/tekipaki.db.tar.gz" ]; then
     tar czf "$PROFILE_DIR/repo/tekipaki.db.tar.gz" -T /dev/null
 fi
 
-if ! grep -q "\[tekipaki\]" /etc/pacman.conf; then
+if ! grep -q "Server = file://$(pwd)/$PROFILE_DIR/repo" /etc/pacman.conf; then
     cat <<EOF >> /etc/pacman.conf
 
-[tekipaki]
+[tekipaki-local]
 SigLevel = Optional TrustAll
 Server = file://$(pwd)/$PROFILE_DIR/repo
 EOF
@@ -178,16 +200,18 @@ build_aur_pkg "proton-ge-custom-bin"
 
 # Local repo is already updated by build_aur_pkg
 
-if ! grep -q "\[tekipaki\]" "$PROFILE_DIR/pacman.conf"; then
+if ! grep -q "Server = file:///repo" "$PROFILE_DIR/pacman.conf"; then
     cat <<EOF >> "$PROFILE_DIR/pacman.conf"
-[tekipaki]
+[tekipaki-local]
 SigLevel = Optional TrustAll
-Server = file://$(pwd)/$PROFILE_DIR/repo
+Server = file:///repo
 EOF
 fi
 
 # 8. Build ISO (Requires archiso)
 echo "Starting mkarchiso..."
+# Clear pacman cache to maximize space before ISO generation
+pacman -Scc --noconfirm
 mkarchiso -v -w /tmp/archiso-tmp -o out "$PROFILE_DIR"
 
 echo "Build complete."
