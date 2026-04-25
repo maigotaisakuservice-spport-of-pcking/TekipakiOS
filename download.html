@@ -25,6 +25,8 @@
         <a href="index.html">ホーム</a>
         <a href="download.html">ダウンロード</a>
         <a href="support.html">サポート</a>
+        <a href="keygen.html">キー生成</a>
+        <a href="license.html">EULA</a>
     </nav>
     <div class="container">
         <div class="download-card">
@@ -32,27 +34,28 @@
             <p>最新の Arch Linux ベース、革新的な UI/UX を統合した ISO イメージを入手しましょう。</p>
             <a href="#" class="btn-download" onclick="alert('準備中...')">ISOをダウンロード (x64)</a>
             <p style="color: #666; font-size: 0.9rem;">SHA-256: <code>e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</code></p>
+            <p><a href="license.html" style="color: var(--primary);">エンドユーザーEULA条項 (EULA)</a> に同意の上、ダウンロードしてください。</p>
         </div>
 
         <div class="requirements">
             <div class="req-box">
-                <h3>最低システム要件</h3>
+                <h3>インストール手順</h3>
                 <ul>
-                    <li>プロセッサ: 1 GHz 以上の 64 ビット CPU</li>
-                    <li>メモリ: 4 GB 以上</li>
-                    <li>ディスク: 20 GB 以上の空き領域</li>
-                    <li>画面: 800 x 600 ピクセル以上の解像度</li>
-                    <li>セキュアブート: UEFI 対応推奨</li>
+                    <li>1. 8GB以上のUSBメモリを準備します。</li>
+                    <li>2. RufusやEtcherを使用してISOを書き込みます。</li>
+                    <li>3. PCをUSBから起動します（UEFIモード推奨）。</li>
+                    <li>4. デスクトップ上の「Tekipaki Setup」を実行します。</li>
+                    <li>5. F11キーでリカバリ環境(TRE)が起動することを確認してください。</li>
                 </ul>
             </div>
             <div class="req-box">
-                <h3>推奨システム要件</h3>
+                <h3>システム要件</h3>
                 <ul>
-                    <li>プロセッサ: 2 GHz 以上のマルチコア CPU</li>
-                    <li>メモリ: 8 GB 以上</li>
-                    <li>ディスク: 64 GB 以上の SSD 空き領域</li>
-                    <li>グラフィックス: DirectX 12 互換 (または Mesa 対応)</li>
-                    <li>その他: TPM 2.0 (DataLocker 利用時に推奨)</li>
+                    <li>CPU: 2 GHz 以上の 64-bit プロセッサ</li>
+                    <li>RAM: 8 GB 以上推奨 (最低 4 GB)</li>
+                    <li>Storage: 64 GB 以上の SSD (NVMe対応推奨)</li>
+                    <li>GPU: Mesa互換 (Intel/AMD/Nvidia)</li>
+                    <li>Network: EULA認証のためのインターネット接続</li>
                 </ul>
             </div>
         </div>

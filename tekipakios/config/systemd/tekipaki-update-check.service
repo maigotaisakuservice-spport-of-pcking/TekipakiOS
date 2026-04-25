@@ -1,0 +1,11 @@
+[Unit]
+Description=Tekipaki OS Background Update Check
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/tekipaki-update-check.sh
+
+[Install]
+WantedBy=multi-user.target

@@ -43,13 +43,28 @@ usbguard
 nftables
 tpm2-tools
 
+# Recovery & Installation Tools (for TRE)
+arch-install-scripts
+e2fsprogs
+dosfstools
+grub
+efibootmgr
+mkinitcpio
+mkinitcpio-archiso
+
 # Apps
 firefox
 # onlyoffice-bin (AUR)
 # wine (Official)
 wine
-# proton-ge-custom-bin (AUR)
+proton-ge-custom-bin
 
 # Installer
 calamares
-# pamac-aur (AUR)
+archlinux-appstream-data-pamac
+libpamac-aur
+pamac-aur
+
+# App Stores & Sandbox
+flatpak
+snapd

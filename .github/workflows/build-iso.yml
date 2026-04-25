@@ -5,7 +5,11 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 env:
+  # Silencing deprecation warnings while ensuring Node 20/24 compatibility
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
@@ -14,44 +18,61 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libgtk-4-dev pkg-config
-
     - name: Set up Rust
       uses: dtolnay/rust-toolchain@stable
 
     - name: Rust Cache
       uses: Swatinem/rust-cache@v2
 
-    - name: Build Custom Apps (Tekipaki-AppSet)
+    - name: Build Perfect OS (Kernel, Rust Apps, AUR, ISO)
       run: |
-        cargo build --release
-        mkdir -p bin
-        cp target/release/tekipaki-* bin/
+        # Consolidated list of required build-time packages
+        PACKAGES="base-devel archiso git bc libelf pahole cpio perl tar xz rust gtk4 pkgconf mkinitcpio kmod mkinitcpio-archiso mkinitcpio-nfs-utils linux-firmware arch-install-scripts binutils openssl flex bison grub libisoburn mtools dosfstools python nbd pv syslinux sudo"
 
-    - name: Build Custom Kernel (linux-tekipaki)
-      run: |
-        # Placeholder for kernel build.
-        # For CI demo, we ensure these files exist for the archiso script
-        # In production, this would be a full build or pull from a repo
-        echo "Building linux-tekipaki ZEN kernel..."
-        mkdir -p bin
-        echo "mock" > bin/vmlinuz-linux-tekipaki
-        echo "mock" > bin/initramfs-linux-tekipaki.img
+        # Run everything inside a privileged Arch Linux container for consistency
+        docker run --rm --privileged \
+          -v $(pwd):/app \
+          -e CI=true \
+          -e TEKIPAKI_PRIVATE_KEY="${{ secrets.TEKIPAKI_PRIVATE_KEY }}" \
+          -w /app \
+          archlinux:latest \
+          /bin/bash -c "pacman-key --init && pacman-key --populate archlinux && \
+          pacman -Sy --noconfirm archlinux-keyring && \
+          pacman-key --populate archlinux && \
+          echo 'Installing Build Dependencies...' && \
+          pacman -Syu --noconfirm $PACKAGES && \
+          bash build-iso.sh && \
+          chown -R $(id -u):$(id -g) out/ download.html"
 
-    - name: Run Archiso to generate ISO
-      run: |
-        # Use docker to run mkarchiso on Ubuntu
-        # We need privileged mode for mkarchiso inside docker
-        docker run --rm --privileged -v $(pwd):/app -w /app archlinux:latest \
-        /bin/bash -c "pacman -Syu --noconfirm archiso && \
-        bash build-iso.sh && \
-        mkarchiso -v -w /tmp/archiso-tmp -o out tekipakios/iso-profile"
-
-    - name: Upload ISO Artifact
-      uses: actions/upload-artifact@v4
+    - name: Create Release and Upload ISO
+      if: success()
+      id: create_release
+      uses: softprops/action-gh-release@v2
       with:
-        name: TekipakiOS-v1.6-x86_64.iso
-        path: out/*.iso
+        tag_name: v1.6-${{ github.run_number }}
+        name: Tekipaki OS v1.6 Build ${{ github.run_number }}
+        draft: false
+        prerelease: false
+        files: out/*.iso
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Update Download Link
+      if: success()
+      run: |
+        # Configure Git
+        git config --global user.name "Tekipaki Build Bot"
+        git config --global user.email "build@tekipaki-os.com"
+
+        # Get the URL of the uploaded ISO from the release
+        ISO_NAME=$(basename $(ls out/*.iso | head -n 1))
+        RELEASE_URL="https://github.com/${{ github.repository }}/releases/download/v1.6-${{ github.run_number }}/$ISO_NAME"
+
+        # Update download.html with latest ISO link
+        sed -i "s|href=\"[^\"]*\" class=\"btn-download\"|href=\"$RELEASE_URL\" class=\"btn-download\"|g" download.html
+        sed -i "s|onclick=\"alert('準備中...')\"||g" download.html
+
+        # Commit and push changes
+        git add download.html
+        git commit -m "Update download link to Build ${{ github.run_number }} [skip ci]"
+        git push origin main
