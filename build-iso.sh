@@ -34,10 +34,11 @@ sed -i 's/CONFIG_HZ_1000=y/# CONFIG_HZ_1000 is not set\nCONFIG_HZ_1000=y/' .conf
 ./scripts/config --enable CONFIG_DM_SNAPSHOT
 ./scripts/config --enable CONFIG_MTD
 ./scripts/config --enable CONFIG_MTD_CHAR
-./scripts/config --module CONFIG_PHRAM
+./scripts/config --module CONFIG_MTD_PHRAM
 ./scripts/config --module CONFIG_MTD_BLOCK
 ./scripts/config --enable CONFIG_NET
-./scripts/config --module CONFIG_NBD
+./scripts/config --module CONFIG_BLK_DEV_NBD
+./scripts/config --enable CONFIG_DRM
 ./scripts/config --enable CONFIG_DRM_PRIVACY_SCREEN
 ./scripts/config --enable CONFIG_BLK_DEV_LOOP
 ./scripts/config --enable CONFIG_BLK_DEV_INITRD

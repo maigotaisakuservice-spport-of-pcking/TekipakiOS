@@ -3,7 +3,6 @@ use std::fs;
 use std::time::{SystemTime, UNIX_EPOCH, Duration};
 use std::thread;
 
-mod lib;
 mod death_penalty;
 
 const LOCK_FILE: &str = "/var/lib/tekipaki/.lock";
@@ -97,8 +96,8 @@ fn final_license_prompt() -> bool {
     io::stdout().flush().unwrap();
     if io::stdin().read_line(&mut input).is_ok() {
         let key = input.trim().replace("-", "");
-        if let Some(k) = lib::base29_to_bigint(&key) {
-            if lib::check_edition(k) != "Invalid" {
+        if let Some(k) = guard_lib::base29_to_bigint(&key) {
+            if guard_lib::check_edition(k) != "Invalid" {
                 println!("Verification successful. System restored.");
                 let _ = fs::create_dir_all("/var/log/tekipaki");
                 let mut log = fs::OpenOptions::new().append(true).create(true).open(AUTH_LOG).unwrap();
@@ -129,8 +128,8 @@ fn main() {
             // 1. Re-verify license file if it exists
             let mut key_valid = false;
             if let Ok(key) = fs::read_to_string(LICENSE_KEY_FILE) {
-                if let Some(k) = lib::base29_to_bigint(&key.trim().replace("-", "")) {
-                    if lib::check_edition(k) != "Invalid" {
+                if let Some(k) = guard_lib::base29_to_bigint(&key.trim().replace("-", "")) {
+                    if guard_lib::check_edition(k) != "Invalid" {
                         key_valid = true;
                     }
                 }
@@ -181,8 +180,8 @@ fn main() {
     let key_file = "/etc/tekipaki/license.key";
     if let Ok(key) = fs::read_to_string(key_file) {
         let k_clean = key.trim().replace("-", "");
-        if let Some(k_int) = lib::base29_to_bigint(&k_clean) {
-            let edition = lib::check_edition(k_int);
+        if let Some(k_int) = guard_lib::base29_to_bigint(&k_clean) {
+            let edition = guard_lib::check_edition(k_int);
             if edition == "Invalid" {
                 println!("Invalid License Detected!");
                 death_penalty::display_bsod();

@@ -1,5 +1,3 @@
-use std::process::Command;
-use std::fs::File;
 use std::io::Write;
 
 pub fn display_bsod() {

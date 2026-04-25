@@ -1,5 +1,4 @@
 use num_bigint::BigUint;
-use num_traits::One;
 
 pub const KEY_CHARS: &str = "2346789ABCDEFGHJKLMNPQRTUVWXY";
 

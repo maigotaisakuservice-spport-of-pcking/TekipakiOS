@@ -26,6 +26,9 @@ jobs:
 
     - name: Build Perfect OS (Kernel, Rust Apps, AUR, ISO)
       run: |
+        # Consolidated list of required build-time packages
+        PACKAGES="base-devel archiso git bc libelf pahole cpio perl tar xz rust gtk4 pkgconf mkinitcpio kmod mkinitcpio-archiso mkinitcpio-nfs-utils linux-firmware arch-install-scripts binutils openssl flex bison grub libisoburn mtools dosfstools python nbd pv syslinux sudo"
+
         # Run everything inside a privileged Arch Linux container for consistency
         docker run --rm --privileged \
           -v $(pwd):/app \
@@ -34,11 +37,12 @@ jobs:
           -w /app \
           archlinux:latest \
           /bin/bash -c "pacman-key --init && pacman-key --populate archlinux && \
-        pacman -Sy --noconfirm archlinux-keyring && \
-        pacman-key --populate archlinux && \
-          pacman -Syu --noconfirm base-devel archiso git bc libelf pahole cpio perl tar xz rust gtk4 pkgconf mkinitcpio kmod mkinitcpio-archiso mkinitcpio-nfs-utils linux-firmware arch-install-scripts binutils openssl flex bison grub libisoburn mtools dosfstools python nbd pv syslinux sudo && \
+          pacman -Sy --noconfirm archlinux-keyring && \
+          pacman-key --populate archlinux && \
+          echo 'Installing Build Dependencies...' && \
+          pacman -Syu --noconfirm $PACKAGES && \
           bash build-iso.sh && \
-          chown -R 1001:1001 out/ download.html"
+          chown -R $(id -u):$(id -g) out/ download.html"
 
     - name: Create Release and Upload ISO
       if: success()
