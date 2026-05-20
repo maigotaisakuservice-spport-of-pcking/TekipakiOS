@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Tekipaki Update Check every 4 hours
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=4h
+RandomizedDelaySec=1h
+
+[Install]
+WantedBy=timers.target

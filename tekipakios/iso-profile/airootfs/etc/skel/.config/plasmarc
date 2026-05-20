@@ -1,0 +1,6 @@
+[General]
+wallpaper=/usr/share/wallpapers/tekipaki/tekipaki-default.png
+
+[PlasmaViews][Panel 1]
+alignment=Center
+panelVisibility=0

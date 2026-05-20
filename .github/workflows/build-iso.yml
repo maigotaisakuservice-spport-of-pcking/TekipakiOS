@@ -1,0 +1,81 @@
+name: Build Tekipaki OS ISO
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  # Silencing deprecation warnings while ensuring Node 20/24 compatibility
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Rust
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Rust Cache
+      uses: Swatinem/rust-cache@v2
+
+    - name: Build Perfect OS (Kernel, Rust Apps, AUR, ISO)
+      run: |
+        # Consolidated list of required build-time packages
+        # Added dependencies for libpamac-aur and friends
+        PACKAGES="base-devel archiso git bc libelf pahole cpio perl tar xz rust gtk4 pkgconf mkinitcpio kmod mkinitcpio-archiso mkinitcpio-nfs-utils linux-firmware arch-install-scripts binutils openssl flex bison grub libisoburn mtools dosfstools python nbd pv syslinux sudo dbus-glib vte3 libnotify appstream appstream-glib archlinux-appstream-data"
+
+        # Run everything inside a privileged Arch Linux container for consistency
+        docker run --rm --privileged \
+          -v $(pwd):/app \
+          -e CI=true \
+          -e TEKIPAKI_PRIVATE_KEY="${{ secrets.TEKIPAKI_PRIVATE_KEY }}" \
+          -w /app \
+          archlinux:latest \
+          /bin/bash -c "pacman-key --init && \
+          pacman-key --populate archlinux && \
+          pacman -Sy --noconfirm archlinux-keyring && \
+          pacman-key --populate archlinux && \
+          pacman -Syy --noconfirm && \
+          echo 'Updating System and Installing Build Dependencies...' && \
+          pacman -Syu --noconfirm $PACKAGES && \
+          bash build-iso.sh && \
+          chown -R $(id -u):$(id -g) out/ download.html"
+
+    - name: Create Release and Upload ISO
+      if: success()
+      id: create_release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v1.6-${{ github.run_number }}
+        name: Tekipaki OS v1.6 Build ${{ github.run_number }}
+        draft: false
+        prerelease: false
+        files: out/*.iso
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Update Download Link
+      if: success()
+      run: |
+        # Configure Git
+        git config --global user.name "Tekipaki Build Bot"
+        git config --global user.email "build@tekipaki-os.com"
+
+        # Get the URL of the uploaded ISO from the release
+        ISO_NAME=$(basename $(ls out/*.iso | head -n 1))
+        RELEASE_URL="https://github.com/${{ github.repository }}/releases/download/v1.6-${{ github.run_number }}/$ISO_NAME"
+
+        # Update download.html with latest ISO link
+        sed -i "s|href=\"[^\"]*\" class=\"btn-download\"|href=\"$RELEASE_URL\" class=\"btn-download\"|g" download.html
+        sed -i "s|onclick=\"alert('準備中...')\"||g" download.html
+
+        # Commit and push changes
+        git add download.html
+        git commit -m "Update download link to Build ${{ github.run_number }} [skip ci]"
+        git push origin main

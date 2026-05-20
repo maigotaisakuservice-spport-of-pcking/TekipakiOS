@@ -1,0 +1,55 @@
+/* Calamares Windows 11-style QSS */
+
+QWidget {
+    font-family: "Segoe UI", "Meiryo", sans-serif;
+    background-color: #ffffff;
+    color: #212121;
+}
+
+#mainApp {
+}
+
+#viewStepBar {
+    background-color: #f3f3f3;
+}
+
+#viewStepBar QAbstractItemView {
+    background-color: #f3f3f3;
+}
+
+QPushButton {
+    background-color: #0067c0;
+    color: #ffffff;
+    border-radius: 4px;
+    padding: 6px 20px;
+    font-weight: 500;
+}
+
+QPushButton:hover {
+    background-color: #0056a0;
+}
+
+QPushButton:disabled {
+    background-color: #cccccc;
+}
+
+QLabel {
+    font-size: 14px;
+}
+
+#welcomePage QLabel#welcomeText {
+    font-size: 24px;
+    font-weight: bold;
+    color: #0067c0;
+}
+
+QProgressBar {
+    border: none;
+    background-color: #e6e6e6;
+    height: 4px;
+    text-align: center;
+}
+
+QProgressBar::chunk {
+    background-color: #0067c0;
+}

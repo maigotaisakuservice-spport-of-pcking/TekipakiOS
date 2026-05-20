@@ -1,0 +1,13 @@
+[workspace]
+members = [
+    "tekipakios/src/guard/tekipaki-guardd",
+    "tekipakios/src/guard/tekipaki-cli",
+    "tekipakios/src/guard/tekipaki-keygen",
+    "tekipakios/src/apps/tekipaki-settings",
+    "tekipakios/src/apps/tekipaki-note",
+    "tekipakios/src/apps/tekipaki-paint",
+    "tekipakios/src/apps/tekipaki-calc",
+    "tekipakios/src/apps/tekipaki-taskmgr",
+    "tekipakios/src/apps/tekipaki-tre",
+]
+resolver = "2"
